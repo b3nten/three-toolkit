@@ -13,10 +13,11 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
+    "@preact/signals": "^1.2.3",
     "@types/three": "^0.165.0",
     "postprocessing": "^6.35.5",
+    "preact": "^10.22.0",
     "three": "^0.165.0",
-    "three-stdlib": "^2.30.3",
-    "@build/three-toolkit": "file:../"
+    "three-stdlib": "^2.30.3"
   }
 }

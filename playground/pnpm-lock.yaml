@@ -5,15 +5,18 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@build/three-toolkit':
-    specifier: file:../
-    version: file:..(@tweakpane/core@2.0.3)(@tweakpane/plugin-essentials@0.2.1)(postprocessing@6.35.5)(three@0.165.0)(tweakpane@4.0.3)
+  '@preact/signals':
+    specifier: ^1.2.3
+    version: 1.2.3(preact@10.22.0)
   '@types/three':
     specifier: ^0.165.0
     version: 0.165.0
   postprocessing:
     specifier: ^6.35.5
     version: 6.35.5(three@0.165.0)
+  preact:
+    specifier: ^10.22.0
+    version: 10.22.0
   three:
     specifier: ^0.165.0
     version: 0.165.0
@@ -238,6 +241,19 @@ packages:
     dev: true
     optional: true
 
+  /@preact/signals-core@1.6.1:
+    resolution: {integrity: sha512-KXEEmJoKDlo0Igju/cj9YvKIgyaWFDgnprShQjzimUd5VynAAdTWMshawEOjUVeKbsI0aR58V6WOQp+DNcKApw==}
+    dev: false
+
+  /@preact/signals@1.2.3(preact@10.22.0):
+    resolution: {integrity: sha512-M2DXse3Wi8HwjI1d2vQWOLJ3lHogvqTsJYvl4ofXRXgMFQzJ7kmlZvlt5i8x5S5VwgZu0ghru4HkLqOoFfU2JQ==}
+    peerDependencies:
+      preact: 10.x
+    dependencies:
+      '@preact/signals-core': 1.6.1
+      preact: 10.22.0
+    dev: false
+
   /@rollup/rollup-android-arm-eabi@4.18.0:
     resolution: {integrity: sha512-Tya6xypR10giZV1XzxmH5wr25VcZSncG0pZIjfePT0OVBvqNEurzValetGNarVrGiq66EBVAFn15iYX4w6FKgQ==}
     cpu: [arm]
@@ -366,18 +382,6 @@ packages:
     dev: true
     optional: true
 
-  /@tweakpane/core@2.0.3:
-    resolution: {integrity: sha512-qHci4XA1Wngpwy8IzsLh5JEdscz8aDti/9YhyOaq01si+cgNDaZfwzTtXdn1+xTxSnCM+pW4Zb2/4eqn+K1ATw==}
-    dev: false
-
-  /@tweakpane/plugin-essentials@0.2.1(tweakpane@4.0.3):
-    resolution: {integrity: sha512-VbFU1/uD+CJNFQdfLXUOLjeG5HyUZH97Ox9CxmyVetg1hqjVun3C83HAGFULyhKzl8tSgii8jr304r8QpdHwzQ==}
-    peerDependencies:
-      tweakpane: ^4.0.0
-    dependencies:
-      tweakpane: 4.0.3
-    dev: false
-
   /@tweenjs/tween.js@23.1.2:
     resolution: {integrity: sha512-kMCNaZCJugWI86xiEHaY338CU5JpD0B97p1j1IKNn/Zto8PgACjQx0UxbHjmOcLl/dDOBnItwD07KmCs75pxtQ==}
     dev: false
@@ -499,6 +503,10 @@ packages:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
     dev: false
 
+  /preact@10.22.0:
+    resolution: {integrity: sha512-RRurnSjJPj4rp5K6XoP45Ui33ncb7e4H7WiOHVpjbkvqvA3U+N8Z6Qbo0AE6leGYBV66n8EhEaFixvIu3SkxFw==}
+    dev: false
+
   /rollup@4.18.0:
     resolution: {integrity: sha512-QmJz14PX3rzbJCN1SG4Xe/bAAX2a6NpCP8ab2vfu2GiUr8AQcr2nCV/oEO3yneFarB67zk8ShlIyWb2LGTb3Sg==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -548,10 +556,6 @@ packages:
     resolution: {integrity: sha512-cc96IlVYGydeceu0e5xq70H8/yoVT/tXBxV/W8A/U6uOq7DXc4/s1Mkmnu6SqoYGhSRWWYFOhVwvq6V0VtbplA==}
     dev: false
 
-  /tweakpane@4.0.3:
-    resolution: {integrity: sha512-BlcWOAe8oe4c+k9pmLBARGdWB6MVZMszayekkixQXTgkxTaYoTUpHpwVEp+3HkoamZkomodpbBf0CkguIHTgLg==}
-    dev: false
-
   /typescript@5.4.5:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
@@ -592,24 +596,3 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
-
-  file:..(@tweakpane/core@2.0.3)(@tweakpane/plugin-essentials@0.2.1)(postprocessing@6.35.5)(three@0.165.0)(tweakpane@4.0.3):
-    resolution: {directory: .., type: directory}
-    id: file:..
-    name: '@build/three-toolkit'
-    peerDependencies:
-      '@tweakpane/core': ^2.0.3
-      '@tweakpane/plugin-essentials': ^0.2.1
-      postprocessing: ^6.35.4
-      three: ^0.165.0
-      tweakpane: ^4.0.3
-    peerDependenciesMeta:
-      postprocessing:
-        optional: true
-    dependencies:
-      '@tweakpane/core': 2.0.3
-      '@tweakpane/plugin-essentials': 0.2.1(tweakpane@4.0.3)
-      postprocessing: 6.35.5(three@0.165.0)
-      three: 0.165.0
-      tweakpane: 4.0.3
-    dev: false

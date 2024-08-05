@@ -2,39 +2,21 @@
   "name": "threejs-toolkit",
   "version": "0.0.1",
   "type": "module",
-  "scripts": {
-    "dev": "concurrently \"node build --dev\" \"cd playground && pnpm dev\"",
-    "build": "node build"
-  },
   "files": [
     ".build"
   ],
-  "exports": {
-    "./scene": {
-      "import": "./.build/scene.js",
-      "types": "./.build/scene.d.ts"
-    },
-    "./editor": {
-      "import": "./.build/editor.js",
-      "types": "./.build/editor.d.ts"
-    },
-    "./asserts": {
-      "import": "./.build/asserts.js",
-      "types": "./.build/asserts.d.ts"
-    },
-    "./destroy": {
-      "import": "./.build/destroy.js",
-      "types": "./.build/destroy.d.ts"
-    }
-  },
   "peerDependencies": {
-    "postprocessing": "^6.35.4",
+    "ogl": "^1.0.7",
     "three": "^0.165.0",
-    "@tweakpane/plugin-essentials": "^0.2.1",
-    "@tweakpane/core": "^2.0.3",
-    "tweakpane": "^4.0.3"
+    "postprocessing": "^6.35.4"
   },
   "peerDependenciesMeta": {
+    "ogl": {
+      "optional": true
+    },
+    "three": {
+      "optional": true
+    },
     "postprocessing": {
       "optional": true
     }
@@ -42,10 +24,11 @@
   "devDependencies": {
     "@types/node": "^20.13.0",
     "@types/three": "^0.165.0",
-    "concurrently": "^8.2.2",
-    "esbuild": "^0.21.4",
-    "esbuild-plugin-d.ts": "^1.2.3",
-    "typescript": "^5.4.5",
-    "camera-controls": "^2.8.4"
+    "camera-controls": "^2.8.4",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "lit": "^3.1.4",
+    "@benstack/logger": "0.1.0"
   }
 }

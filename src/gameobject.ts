@@ -16,6 +16,7 @@ type Component = any;
 
 class GameObjectContainer {
   #root = new Scene();
+
   get root() {
     return this.#root;
   }
@@ -23,6 +24,7 @@ class GameObjectContainer {
   private gameObjects: Set<GameObject> = new Set();
 
   #state: "idle" | "running" | "destroyed" = "idle";
+
   get state() {
     return this.#state;
   }
@@ -178,8 +180,10 @@ class GameObjectContainer {
  ***************************************************************************************/
 
 let currentGameObjectContainer: GameObjectContainer | null = null;
+
 const setCurrentGameObjectContainer = (scene: GameObjectContainer | null) =>
   currentGameObjectContainer = scene;
+
 const getCurrentGameObjectContainer = () => {
   if (!currentGameObjectContainer) {
     throw new Error(
@@ -239,6 +243,7 @@ class GameObject {
 
   created: boolean = false;
   destroyed: boolean = false;
+
   #enabled: boolean = true;
   get enabled() {
     return this.#enabled;
@@ -294,8 +299,10 @@ class GameObject {
  ***************************************************************************************/
 
 let currentGameObject: GameObject | null = null;
+
 const setCurrentGameObject = (scene: GameObject | null) =>
   currentGameObject = scene;
+
 const getCurrentGameObject = () => {
   if (!currentGameObject) {
     throw new Error(
@@ -305,7 +312,7 @@ const getCurrentGameObject = () => {
   return currentGameObject;
 };
 
-abstract class Behavior {
+class Behavior {
   static Create<T extends Behavior, Args extends any[]>(
     gameObject: GameObject,
     behavior: ConstructorOf<T, [GameObject, ...Args]>,
