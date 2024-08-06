@@ -5,9 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@benstack/logger':
-    specifier: 0.1.0
-    version: 0.1.0
+  '@benstack/toolkit':
+    specifier: ^0.0.4
+    version: 0.0.4
   lit:
     specifier: ^3.1.4
     version: 3.1.4
@@ -37,8 +37,8 @@ devDependencies:
 
 packages:
 
-  /@benstack/logger@0.1.0:
-    resolution: {integrity: sha512-LH1M7ROQDJ2tMpjfnpzj4tifPF1YrWBEAc0q/z32Rgg19tC6dBF31/b0Q2eh2PPUwArdTneSY4dSdqpzTJDnFA==}
+  /@benstack/toolkit@0.0.4:
+    resolution: {integrity: sha512-1IGLCIWOps71dYjiguoOevTgJarY1KtZ2jztXn4Uhiz8kxLUXbM87HfSQSX6mTG51Za7Gb9FzSFZAlH091nwFA==}
     dev: false
 
   /@lit-labs/ssr-dom-shim@1.2.0:

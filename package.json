@@ -7,8 +7,8 @@
   ],
   "peerDependencies": {
     "ogl": "^1.0.7",
-    "three": "^0.165.0",
-    "postprocessing": "^6.35.4"
+    "postprocessing": "^6.35.4",
+    "three": "^0.165.0"
   },
   "peerDependenciesMeta": {
     "ogl": {
@@ -28,7 +28,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "lit": "^3.1.4",
-    "@benstack/logger": "0.1.0"
+    "@benstack/toolkit": "^0.0.4",
+    "lit": "^3.1.4"
   }
 }

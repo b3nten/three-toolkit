@@ -1,2 +1,0 @@
-import { LitElement } from "lit";
-
