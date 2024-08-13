@@ -1,16 +1,16 @@
 ﻿import { Scene } from "./scene";
 import * as three from "three";
-import { BehaviorComponent, Component, SceneComponent } from "./component";
-import { destroy } from "./destroy";
-import { Asserts } from "./asserts";
+import { Behavior } from "./behavior";
+import { destroy } from "../destroy";
+import { Asserts } from "../asserts";
 
-export class Actor {
+export class GameObject {
 
 	#object3d: three.Object3D;
 
 	scene: Scene | null = null;
 
-	parent: SceneComponent | Actor | null = null;
+	parent: GameObject | null = null;
 
 	get object3d() { return this.#object3d; }
 
@@ -28,7 +28,7 @@ export class Actor {
 
 	set visible(value: boolean) { this.object3d.visible = value; }
 
-	children: Set<Actor | Component> = new Set;
+	children: Set<GameObject | Behavior> = new Set;
 
 	initialized = false;
 	spawned = false;
@@ -39,7 +39,7 @@ export class Actor {
 		this.#object3d.userData.owner = this;
 	}
 
-	addChild<T extends Actor | Component>(child: T): T {
+	addChild<T extends GameObject | Behavior>(child: T): T {
 		if(Asserts.IsActor(child)){
 			child.parent?.removeChild(child)
 			child.parent = this;
@@ -51,8 +51,8 @@ export class Actor {
 			}
 			return child;
 		} else if(Asserts.IsComponent(child)) {
-			if(child.parent instanceof SceneComponent || child.parent instanceof BehaviorComponent){
-				child.parent.removeChild(child as BehaviorComponent)
+			if(child.parent instanceof Component || child.parent instanceof Behavior){
+				child.parent.removeChild(child as Behavior)
 			}
 			child.parent = this;
 			if(this.initialized && !child.initialized){
@@ -67,7 +67,7 @@ export class Actor {
 		}
 	}
 
-	removeChild<T extends Actor | Component>(child: T): T {
+	removeChild<T extends GameObject | Behavior>(child: T): T {
 		if(Asserts.IsActor(child)){
 			child.parent = null;
 			this.children.delete(child)
