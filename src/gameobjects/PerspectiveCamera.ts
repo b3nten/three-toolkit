@@ -58,9 +58,14 @@ export class PerspectiveCameraObject extends GameObject {
 
 	override onCreate() {
 		super.onCreate();
-		const aspect = this.scene?.canvas ? (this.scene.canvas.clientWidth / this.scene.canvas.clientHeight) : 1;
+		const aspect = this.scene?.game?.renderTarget ? (this.scene.game.renderTarget.clientWidth / this.scene.game.renderTarget.clientHeight) : 1;
 		this.object3d.aspect = aspect;
 		this.object3d.updateProjectionMatrix();
 	}
 
+	override onResize(b: DOMRect) {
+		const aspect = this.scene?.game?.renderTarget ? (this.scene.game.renderTarget.clientWidth / this.scene.game.renderTarget.clientHeight) : 1;
+		this.object3d.aspect = aspect;
+		this.object3d.updateProjectionMatrix();
+	}
 }

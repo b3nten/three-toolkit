@@ -1,13 +1,12 @@
 ﻿import * as three from 'three';
 import { SceneObject } from "./gameobjects/SceneObject";
+import { Game } from "./game";
 
 export abstract class Scene {
 
+	game?: Game;
+
 	root: SceneObject;
-
-	canvas: HTMLCanvasElement | null = null;
-
-	renderer: three.WebGLRenderer | null = null;
 
 	#isLoading: boolean = false;
 	get isLoading() {

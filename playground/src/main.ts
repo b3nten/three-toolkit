@@ -6,7 +6,7 @@ import { BasicScene } from "../../src/scenes/BasicScene.ts";
 import { PrimitiveCubeObject } from "../../src/gameobjects/PrimitiveObject.ts";
 import { SpinBehavior } from "../../src/behaviors/SpinBehavior.ts";
 
-const game = new Game()
+const game = new Game({ target: document.getElementById("game") as HTMLCanvasElement })
 
 const assets = new AssetLoader({
     env: new EnvironmentAsset(
@@ -23,7 +23,7 @@ class TestScene extends BasicScene {
         this.environment.backgroundBlur = 1;
 
         const cube = new PrimitiveCubeObject;
-        cube.addChild(new SpinBehavior);
+        cube.addChild(new SpinBehavior)
 
         this.root.addChild(cube)
 
@@ -39,7 +39,7 @@ if(!target) {
 
 console.log("Loading scene")
 
-await game.loadScene(new TestScene(target))
+await game.loadScene(new TestScene)
 
 console.log("Playing scene")
 

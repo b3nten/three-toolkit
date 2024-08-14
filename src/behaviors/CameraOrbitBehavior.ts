@@ -1,7 +1,7 @@
 import { Behavior } from "../behavior";
-import * as three from "three";
 import { PerspectiveCameraObject } from "../gameobjects/PerspectiveCamera";
 import { OrbitControls } from "three-stdlib";
+import { ASSERT } from "../asserts";
 
 export class CameraOrbitBehavior extends Behavior {
 
@@ -9,12 +9,17 @@ export class CameraOrbitBehavior extends Behavior {
 
 	onCreate() {
 		super.onCreate();
+
 		if(!(this.parent instanceof PerspectiveCameraObject)) return;
-		this.controls = new OrbitControls(this.parent.object3d, this.scene?.canvas!);
+
+		ASSERT(this.scene?.game?.renderTarget, "Renderer must be defined");
+
+		this.controls = new OrbitControls(this.parent.object3d, this.scene.game.renderTarget);
 	}
 
 	onUpdate(frametime: number, elapsedtime: number) {
 		super.onUpdate(frametime, elapsedtime);
+
 		this.controls!.update();
 	}
 }

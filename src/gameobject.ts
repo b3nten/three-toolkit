@@ -129,9 +129,18 @@ export class GameObject {
 		}
 	}
 
+	resize(bounds: DOMRect) {
+		if(!this.initialized || this.destroyed) return;
+		this.onResize(bounds)
+		for(const child of this.children){
+			child.resize(bounds)
+		}
+	}
+
 	onCreate(): void {};
 	onSpawn(): void {};
 	onUpdate(frametime: number, elapsedtime: number): void {};
 	onDespawn(): void {};
+	onResize(bounds: DOMRect): void {};
 	destructor(): void {};
 }

@@ -1,5 +1,6 @@
 import { GameObject } from "../gameobject";
 import * as three from "three"
+import { ASSERT } from "../asserts";
 
 export class OrthographicCameraObject extends GameObject {
 	override object3d: three.OrthographicCamera;
@@ -95,7 +96,17 @@ export class OrthographicCameraObject extends GameObject {
 
 	override onCreate() {
 		super.onCreate();
-		const aspect = this.scene?.canvas ? (this.scene.canvas.clientWidth / this.scene.canvas.clientHeight) : 1;
+
+		ASSERT(this.scene?.game?.renderTarget, "OrthographicCameraObject must be used in a scene with a render target");
+
+		const aspect = this.scene?.game?.renderTarget ? (this.scene.game.renderTarget.clientWidth / this.scene.game.renderTarget.clientHeight) : 1;
+		this.object3d.left = -aspect;
+		this.object3d.right = aspect;
+		this.object3d.updateProjectionMatrix();
+	}
+
+	override onResize() {
+		const aspect = this.scene?.game?.renderTarget ? (this.scene.game.renderTarget.clientWidth / this.scene.game.renderTarget.clientHeight) : 1;
 		this.object3d.left = -aspect;
 		this.object3d.right = aspect;
 		this.object3d.updateProjectionMatrix();

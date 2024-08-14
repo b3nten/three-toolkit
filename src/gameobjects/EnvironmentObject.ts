@@ -162,14 +162,14 @@ export class EnvironmentObject extends Behavior {
 	#set() {
 		super.onCreate();
 
-		if(!this.scene || !this.scene.renderer) return;
+		if(!this.scene || !this.scene.game?.renderer) return;
 
 		if(this.#texture){
 			this.scene.root.object3d.environment = this.#texture;
 		} else if(this.#envScene){
-			this.#texture = constructScene(this.#envScene, this.scene.root.object3d, this.scene.renderer);
+			this.#texture = constructScene(this.#envScene, this.scene.root.object3d, this.scene.game?.renderer);
 		} else {
-			this.#texture = constructScene(createDefaultEnvironment(), this.scene.root.object3d, this.scene.renderer);
+			this.#texture = constructScene(createDefaultEnvironment(), this.scene.root.object3d, this.scene.game?.renderer);
 		}
 
 		if(this.#background){
