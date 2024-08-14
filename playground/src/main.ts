@@ -1,60 +1,46 @@
-import * as three from "three";
-import { Game } from "../../src/game.ts";
-import { Scene } from "../../src/scene.ts";
-import { MeshObject } from "../../src/actors/MeshObject.ts";
-import { PerspectiveCameraObject } from "../../src/actors/CameraActor.ts";
-import { Behavior } from "../../src/behavior.ts";
-
 import "./styles.css";
+import { Game } from "../../src/mod.ts"
+import { CameraOrbitBehavior } from "../../src/behaviors/CameraOrbitBehavior.ts";
+import { AssetLoader, EnvironmentAsset } from "../../src/assets.ts";
+import { BasicScene } from "../../src/scenes/BasicScene.ts";
+import { PrimitiveCubeObject } from "../../src/gameobjects/PrimitiveObject.ts";
+import { SpinBehavior } from "../../src/behaviors/SpinBehavior.ts";
 
 const game = new Game()
 
-class Spin extends Behavior {
-    onUpdate() {
-        this.parent!.rotation.y += 0.01
-        this.parent!.rotation.x += 0.01
+const assets = new AssetLoader({
+    env: new EnvironmentAsset(
+        "https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/potsdamer_platz_1k.hdr")
+})
+
+class TestScene extends BasicScene {
+    override async setup(){
+        await super.setup()
+
+        await assets.load()
+
+        this.environment.texture = assets.data.env;
+        this.environment.backgroundBlur = 1;
+
+        const cube = new PrimitiveCubeObject;
+        cube.addChild(new SpinBehavior);
+
+        this.root.addChild(cube)
+
+        this.camera.addChild(new CameraOrbitBehavior)
     }
 }
 
-class TestCube extends MeshObject {
-    constructor(){
-        super(
-            new three.BoxGeometry(1, 1, 1),
-            new three.MeshBasicMaterial({ color: "pink" })
-        )
-        this.addChild(new Spin)
-    }
+const target = document.getElementById("game") as HTMLCanvasElement;
+
+if(!target) {
+    throw new Error("No target element found")
 }
 
-class MainScene extends Scene {
+console.log("Loading scene")
 
-    renderer = new three.WebGLRenderer({
-        canvas: document.getElementById("game")!,
-        alpha: true,
-        antialias: true,
-        precision: "highp"
-    })
+await game.loadScene(new TestScene(target))
 
-    camera = new PerspectiveCameraObject;
+console.log("Playing scene")
 
-    override async setup(): Promise<void> {
-        await super.setup();
-
-        this.canvas = document.getElementById("game") as HTMLCanvasElement
-
-        this.camera.position.z = 5
-
-        this.renderer.setPixelRatio(2)
-        this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight)
-
-        this.root.addChild(new TestCube)
-        this.root.addChild(this.camera)
-    }
-
-    render(){
-        this.renderer.render(this.root.object3d, this.camera.object3d)
-    }
-}
-
-await game.loadScene(new MainScene)
 game.play()

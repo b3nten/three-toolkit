@@ -1,5 +1,6 @@
 ﻿import { Scene } from "./scene";
 import { ASSERT, Asserts } from "./asserts";
+import { Clock } from "three";
 
 export class Game {
 	currentScene?: Scene;
@@ -23,8 +24,10 @@ export class Game {
 		requestAnimationFrame(this.#gameloop.bind(this))
 	}
 
+	clock = new Clock()
+
 	#gameloop(){
 		requestAnimationFrame(this.#gameloop.bind(this))
-		this.currentScene?.update()
+		this.currentScene?.update(this.clock.getDelta(), this.clock.getElapsedTime())
 	}
 }

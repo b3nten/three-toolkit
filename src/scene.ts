@@ -1,13 +1,13 @@
-﻿import { GameObject } from "./gameobject";
+﻿import * as three from 'three';
+import { SceneObject } from "./gameobjects/SceneObject";
 
 export abstract class Scene {
 
-	root: GameObject;
+	root: SceneObject;
 
 	canvas: HTMLCanvasElement | null = null;
 
-	#frametime = 16.66;
-	#elapsed = 0;
+	renderer: three.WebGLRenderer | null = null;
 
 	#isLoading: boolean = false;
 	get isLoading() {
@@ -40,7 +40,7 @@ export abstract class Scene {
 	}
 
 	constructor() {
-		this.root = new GameObject;
+		this.root = new SceneObject;
 		this.root.scene = this;
 	}
 
@@ -52,12 +52,9 @@ export abstract class Scene {
 		this.root.spawn()
 	}
 
-	update() {
-		const t = performance.now()
-		this.root.update(t - this.#frametime, this.#elapsed)
-		this.render(this.#frametime, this.#elapsed);
-		this.#frametime = performance.now() - t;
-		this.#elapsed += this.#frametime;
+	update(frametime: number, elapsedtime: number) {
+		this.root.update(frametime, elapsedtime)
+		this.render(frametime, elapsedtime);
 	}
 
 	abstract render(frametime: number, elapsedtime: number): void;
