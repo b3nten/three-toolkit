@@ -12,12 +12,19 @@ export class Game {
 			this.currentScene.destructor?.();
 		}
 		this.currentScene = scene;
-		await scene.load?.();
+		await scene.setup?.();
 		this.currentSceneLoaded = true;
 	}
 
 	play(){
 		ASSERT(this.currentSceneLoaded, "Scene must be loaded before playing");
-		this.currentScene?.play();
+		ASSERT(this.currentScene)
+		this.currentScene.play();
+		requestAnimationFrame(this.#gameloop.bind(this))
+	}
+
+	#gameloop(){
+		requestAnimationFrame(this.#gameloop.bind(this))
+		this.currentScene?.update()
 	}
 }

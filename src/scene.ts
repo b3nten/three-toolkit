@@ -1,9 +1,13 @@
-﻿import { Actor } from "./actor";
-import { Component } from "./component";
+﻿import { GameObject } from "./gameobject";
 
 export abstract class Scene {
 
-	root: Actor;
+	root: GameObject;
+
+	canvas: HTMLCanvasElement | null = null;
+
+	#frametime = 16.66;
+	#elapsed = 0;
 
 	#isLoading: boolean = false;
 	get isLoading() {
@@ -36,31 +40,38 @@ export abstract class Scene {
 	}
 
 	constructor() {
-		this.root = new Actor;
+		this.root = new GameObject;
 		this.root.scene = this;
 	}
 
-
-	async load() {
-	}
+	async setup() {}
 
 	play() {
 		this.#isPlaying = true;
+		this.root.create()
+		this.root.spawn()
 	}
 
 	update() {
-
-		this.render();
+		const t = performance.now()
+		this.root.update(t - this.#frametime, this.#elapsed)
+		this.render(this.#frametime, this.#elapsed);
+		this.#frametime = performance.now() - t;
+		this.#elapsed += this.#frametime;
 	}
 
-	abstract render(): void;
+	abstract render(frametime: number, elapsedtime: number): void;
 
 	endPlay() {
 		this.#isPlaying = false;
 		this.#isEnding = true;
+		this.root.despawn()
+		this.root.destroy()
 	}
 
 	destructor() {
 		this.#isDestroyed = true;
+		this.root.despawn()
+		this.root.destroy()
 	}
 }

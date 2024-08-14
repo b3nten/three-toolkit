@@ -6,7 +6,7 @@ body {
     padding: 0;
 }
 
-video-game {
+#game {
     display: block;
     margin: 0 auto;
     width: 100%;

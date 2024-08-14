@@ -1,7 +1,7 @@
 import * as three from "three";
-import { Actor } from "./actor";
-import { BehaviorComponent, Component, SceneComponent } from "./component";
 import { Scene } from "./scene";
+import { GameObject } from "./gameobject";
+import { Behavior } from "./behavior";
 
 export { ASSERT } from "@benstack/toolkit/asserts"
 
@@ -20,8 +20,8 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsActor(object: any): object is Actor {
-		return object instanceof Actor;
+	static IsGameObject(object: any): object is GameObject {
+		return object instanceof GameObject;
 	}
 
 	/**
@@ -30,8 +30,8 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsComponent(object: any): object is Component {
-		return object instanceof Component;
+	static IsBehavior(object: any): object is Behavior {
+		return object instanceof Behavior;
 	}
 
 	/**
@@ -42,26 +42,6 @@ export class Asserts {
 	 */
 	static IsScene(object: any): object is Scene {
 		return object instanceof Scene;
-	}
-
-	/**
-	 * Check if an object is a BehaviorComponent
-	 * @param object
-	 * @constructor
-	 * @returns {boolean}
-	 */
-	static IsBehaviorComponent(object: any): object is BehaviorComponent {
-		return object instanceof BehaviorComponent;
-	}
-
-	/**
-	 * Check if an object is a SceneComponent
-	 * @param object
-	 * @constructor
-	 * @returns {boolean}
-	 */
-	static IsSceneComponent(object: any): object is SceneComponent {
-		return object instanceof SceneComponent;
 	}
 
 	/**

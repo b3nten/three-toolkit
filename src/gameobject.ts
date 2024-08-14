@@ -1,18 +1,16 @@
 ﻿import { Scene } from "./scene";
 import * as three from "three";
 import { Behavior } from "./behavior";
-import { destroy } from "../destroy";
-import { Asserts } from "../asserts";
+import { destroy } from "./destroy";
+import { Asserts } from "./asserts";
 
 export class GameObject {
 
-	#object3d: three.Object3D;
+	object3d: three.Object3D;
 
 	scene: Scene | null = null;
 
 	parent: GameObject | null = null;
-
-	get object3d() { return this.#object3d; }
 
 	get position() { return this.object3d.position; }
 
@@ -35,56 +33,56 @@ export class GameObject {
 	destroyed = false;
 
 	constructor() {
-		this.#object3d = new three.Object3D;
-		this.#object3d.userData.owner = this;
+		this.object3d = new three.Object3D;
+		this.object3d.userData.owner = this;
 	}
 
 	addChild<T extends GameObject | Behavior>(child: T): T {
-		if(Asserts.IsActor(child)){
-			child.parent?.removeChild(child)
-			child.parent = this;
-			if(this.initialized && !child.initialized){
-				child.create()
-			}
-			if(this.spawned && !child.spawned){
-				child.spawn()
-			}
-			return child;
-		} else if(Asserts.IsComponent(child)) {
-			if(child.parent instanceof Component || child.parent instanceof Behavior){
-				child.parent.removeChild(child as Behavior)
-			}
-			child.parent = this;
-			if(this.initialized && !child.initialized){
-				child.create()
-			}
-			if(this.spawned && !child.spawned){
-				child.spawn()
-			}
-			return child;
-		} else {
-			throw Error(`Unknown child: ${String(child)}`)
+		if(this.destroyed) return child;
+
+		if(Asserts.IsGameObject(child.parent)){
+			child.parent.removeChild(child)
 		}
+
+		this.children.add(child)
+
+		child.parent = this;
+
+		if(Asserts.IsGameObject(child)){
+			this.object3d.add(child.object3d)
+		}
+
+		if(this.initialized){
+			child.create();
+		}
+
+		if(this.spawned){
+			child.spawn();
+		}
+
+		return child;
 	}
 
 	removeChild<T extends GameObject | Behavior>(child: T): T {
-		if(Asserts.IsActor(child)){
-			child.parent = null;
-			this.children.delete(child)
-			return child;
-		} else if(Asserts.IsComponent(child)) {
-			child.parent = null;
-			this.children.delete(child)
-			return child;
-		} else {
-			throw Error(`Unknown child: ${String(child)}`)
+		if(this.destroyed) return child;
+
+		child.parent = null;
+
+		this.children.delete(child)
+
+		if(Asserts.IsGameObject(child)){
+			this.object3d.remove(child.object3d)
 		}
+
+		return child;
 	}
 
 	create(){
 		if(this.initialized || this.destroyed) return;
 
-		this.onCreate?.();
+		this.object3d.userData.owner = this;
+
+		this.onCreate();
 
 		this.initialized = true;
 
@@ -96,7 +94,9 @@ export class GameObject {
 
 	spawn(){
 		if(this.spawned || this.destroyed) return;
-		this.onSpawn?.()
+		this.onSpawn()
+		this.spawned = true;
+		this.parent?.object3d.add(this.object3d)
 		for(const child of this.children){
 			child.spawn()
 		}
@@ -104,7 +104,7 @@ export class GameObject {
 
 	update(frametime: number, elapsedtime: number){
 		if(!this.spawned || this.destroyed) return;
-		this.onUpdate?.(frametime, elapsedtime)
+		this.onUpdate(frametime, elapsedtime)
 		for(const child of this.children){
 			child.update(frametime, elapsedtime)
 		}
@@ -112,9 +112,8 @@ export class GameObject {
 
 	despawn(){
 		if(!this.spawned || this.destroyed) return;
-
-		this.onDespawn?.();
-
+		this.onDespawn();
+		this.parent?.object3d.remove(this.object3d)
 		for(const child of this.children){
 			child.despawn()
 		}
@@ -122,7 +121,7 @@ export class GameObject {
 
 	destroy(){
 		if(this.destroyed) return;
-		this.destructor?.()
+		this.destructor()
 		this.destroyed = true;
 		destroy(this.object3d)
 		for(const child of this.children){
@@ -130,9 +129,9 @@ export class GameObject {
 		}
 	}
 
-	onCreate?(): void;
-	onSpawn?(): void;
-	onUpdate?(frametime: number, elapsedtime: number): void;
-	onDespawn?(): void;
-	destructor?(): void;
+	onCreate(): void {};
+	onSpawn(): void {};
+	onUpdate(frametime: number, elapsedtime: number): void {};
+	onDespawn(): void {};
+	destructor(): void {};
 }
