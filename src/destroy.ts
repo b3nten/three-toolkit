@@ -1,4 +1,4 @@
-import * as three from "three";
+import * as Three from "three";
 import { Asserts } from "./asserts";
 
 /****************************************************************************************
@@ -6,12 +6,12 @@ import { Asserts } from "./asserts";
  * https://github.com/lume/lume/blob/a16fc59473e11ac53e7fa67e1d3cb7e060fe1d72/src/utils/three.ts
  *****************************************************************************************/
 
-function disposeObject(obj: three.Object3D) {
+function disposeObject(obj: Three.Object3D) {
   if (!obj) return;
 
   if (Asserts.IsRenderItem(obj)) {
     if (obj.geometry) obj.geometry.dispose();
-    const materials: three.Material[] = ([] as three.Material[]).concat(
+    const materials: Three.Material[] = ([] as Three.Material[]).concat(
       obj.material,
     );
     for (const material of materials) {
@@ -24,7 +24,7 @@ function disposeObject(obj: three.Object3D) {
   });
 }
 
-export function destroy(obj: three.Object3D) {
+export function destroy(obj: Three.Object3D) {
   if(!Asserts.IsObject3D(obj)) return;
   obj.traverse(disposeObject);
 }

@@ -1,29 +1,29 @@
-import * as three from "three"
+import * as Three from "three"
 import { GameObject } from "../gameobject";
 
 
 const PRIMITIVE_COLOR = '#c4c4c4'
 
 type PrimitiveMeshMaterial =
-	| three.MeshStandardMaterial
-	| three.MeshBasicMaterial
-	| three.MeshLambertMaterial
-	| three.MeshMatcapMaterial
-	| three.MeshPhongMaterial
-	| three.MeshPhysicalMaterial
-	| three.MeshToonMaterial
+	| Three.MeshStandardMaterial
+	| Three.MeshBasicMaterial
+	| Three.MeshLambertMaterial
+	| Three.MeshMatcapMaterial
+	| Three.MeshPhongMaterial
+	| Three.MeshPhysicalMaterial
+	| Three.MeshToonMaterial
 
 
 type PrimitiveArgs = {
 	material?: PrimitiveMeshMaterial
-	color?: string | three.Color
-	position?: three.Vector3
-	rotation?: three.Euler
-	scale?: three.Vector3
+	color?: string | Three.Color
+	position?: Three.Vector3
+	rotation?: Three.Euler
+	scale?: Three.Vector3
 }
 
 export class PrimitiveCubeObject extends GameObject {
-	declare object3d: three.Mesh;
+	declare object3d: Three.Mesh;
 
 	#material: PrimitiveMeshMaterial;
 
@@ -34,13 +34,13 @@ export class PrimitiveCubeObject extends GameObject {
 		this.object3d.material = value;
 	}
 
-	#color: string | three.Color = PRIMITIVE_COLOR;
+	#color: string | Three.Color = PRIMITIVE_COLOR;
 
 	get color(){ return this.#color; }
 
-	set color(value: string | three.Color){
+	set color(value: string | Three.Color){
 		this.#color = value;
-		this.#material.color = new three.Color(value);
+		this.#material.color = new Three.Color(value);
 	}
 
 	constructor(args: PrimitiveArgs = {}) {
@@ -53,11 +53,11 @@ export class PrimitiveCubeObject extends GameObject {
 		if(args.material){
 			this.#material = args.material
 		} else {
-			this.#material = new three.MeshStandardMaterial({ color: this.#color });
+			this.#material = new Three.MeshStandardMaterial({ color: this.#color });
 		}
 
-		this.object3d = new three.Mesh(
-			new three.BoxGeometry(1, 1, 1),
+		this.object3d = new Three.Mesh(
+			new Three.BoxGeometry(1, 1, 1),
 			this.#material
 		);
 

@@ -1,12 +1,12 @@
 ﻿import { Scene } from "./scene";
-import * as three from "three";
+import * as Three from "three";
 import { Behavior } from "./behavior";
 import { destroy } from "./destroy";
 import { Asserts } from "./asserts";
 
 export class GameObject {
 
-	object3d: three.Object3D;
+	object3d: Three.Object3D;
 
 	scene: Scene | null = null;
 
@@ -33,12 +33,12 @@ export class GameObject {
 	destroyed = false;
 
 	constructor() {
-		this.object3d = new three.Object3D;
+		this.object3d = new Three.Object3D;
 		this.object3d.userData.owner = this;
 	}
 
-	addChild<T extends GameObject | Behavior>(child: T): T {
-		if(this.destroyed) return child;
+	addChild<T extends GameObject | Behavior>(child: T): this {
+		if(this.destroyed) return this;
 
 		if(Asserts.IsGameObject(child.parent)){
 			child.parent.removeChild(child)
@@ -60,7 +60,7 @@ export class GameObject {
 			child.spawn();
 		}
 
-		return child;
+		return this;
 	}
 
 	removeChild<T extends GameObject | Behavior>(child: T): T {

@@ -1,4 +1,4 @@
-import * as three from "three"
+import * as Three from "three"
 import { Scene } from "../scene";
 import { PerspectiveCameraObject } from "../gameobjects/PerspectiveCamera";
 import { EnvironmentObject } from "../gameobjects/EnvironmentObject";
@@ -20,7 +20,7 @@ export class BasicScene extends Scene {
 
 		ASSERT(this.game, "Game is not defined")
 
-		this.game.renderer.toneMapping = three.ACESFilmicToneMapping;
+		this.game.renderer.toneMapping = Three.ACESFilmicToneMapping;
 		this.game.renderer.toneMappingExposure = 1;
 
 		this.root.addChild(this.camera)

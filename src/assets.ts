@@ -1,4 +1,4 @@
-﻿import * as three from "three"
+﻿import * as Three from "three"
 import { EXRLoader, RGBELoader } from "three-stdlib";
 
 export enum State {
@@ -277,14 +277,14 @@ export class AssetLoader<Assets extends Record<string, Asset<any>>> {
 	}
 }
 
-export class EnvironmentAsset extends Asset<three.Texture | three.CubeTexture> {
+export class EnvironmentAsset extends Asset<Three.Texture | Three.CubeTexture> {
 	constructor(public readonly path: string | string[]) { super(); }
 
 	static EXRLoader = new EXRLoader;
 	static RGBELoader = new RGBELoader;
-	static CubeTextureLoader = new three.CubeTextureLoader;
+	static CubeTextureLoader = new Three.CubeTextureLoader;
 
-	async loader(): Promise<three.Texture | three.CubeTexture> {
+	async loader(): Promise<Three.Texture | Three.CubeTexture> {
 
 		const firstEntry = Array.isArray(this.path) ? this.path[0] : this.path
 
@@ -301,13 +301,13 @@ export class EnvironmentAsset extends Asset<three.Texture | three.CubeTexture> {
 			case 'exr':{
 				const loader = extension === 'exr' ? EnvironmentAsset.EXRLoader : EnvironmentAsset.RGBELoader;
 				const texture = await loader.loadAsync(firstEntry, (e) => this.updateProgress(e.loaded / e.total));
-				texture.mapping = three.EquirectangularReflectionMapping
+				texture.mapping = Three.EquirectangularReflectionMapping
 				return texture
 			}
 			case 'cube': {
 				const loaderCube = EnvironmentAsset.CubeTextureLoader;
 				const texture = await loaderCube.loadAsync(this.path as string[], (e) => this.updateProgress(e.loaded / e.total));
-				texture.mapping = three.CubeReflectionMapping;
+				texture.mapping = Three.CubeReflectionMapping;
 				return texture
 			}
 			default:

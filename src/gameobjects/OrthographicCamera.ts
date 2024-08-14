@@ -1,9 +1,9 @@
 import { GameObject } from "../gameobject";
-import * as three from "three"
+import * as Three from "three"
 import { ASSERT } from "../asserts";
 
 export class OrthographicCameraObject extends GameObject {
-	override object3d: three.OrthographicCamera;
+	override object3d: Three.OrthographicCamera;
 
 	#left: number;
 	get left() {
@@ -82,7 +82,7 @@ export class OrthographicCameraObject extends GameObject {
 		this.#near = settings.near ?? 0.1;
 		this.#far = settings.far ?? 1000;
 
-		this.object3d = new three.OrthographicCamera(
+		this.object3d = new Three.OrthographicCamera(
 			this.#left,
 			this.#right,
 			this.#top,

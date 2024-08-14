@@ -1,5 +1,4 @@
-﻿import * as three from 'three';
-import { SceneObject } from "./gameobjects/SceneObject";
+﻿import { SceneObject } from "./gameobjects/SceneObject";
 import { Game } from "./game";
 
 export abstract class Scene {

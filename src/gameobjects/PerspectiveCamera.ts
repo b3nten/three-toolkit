@@ -1,9 +1,9 @@
 import { GameObject } from "../gameobject";
-import * as three from "three"
+import * as Three from "three"
 
 export class PerspectiveCameraObject extends GameObject {
 
-	override object3d: three.PerspectiveCamera;
+	override object3d: Three.PerspectiveCamera;
 
 	#fov: number;
 	get fov() {
@@ -46,7 +46,7 @@ export class PerspectiveCameraObject extends GameObject {
 		this.#near = settings.near ?? 0.1;
 		this.#far = settings.far ?? 1000;
 
-		this.object3d = new three.PerspectiveCamera(
+		this.object3d = new Three.PerspectiveCamera(
 			this.#fov,
 			1,
 			this.#near,

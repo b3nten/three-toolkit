@@ -1,34 +1,34 @@
 import { GameObject } from "../gameobject";
-import * as THREE from "three"
+import * as Three from "three"
 
 export class MeshObject extends GameObject {
 
-	override object3d = new THREE.Mesh()
+	override object3d = new Three.Mesh()
 
-	#geometry: THREE.BufferGeometry
+	#geometry: Three.BufferGeometry
 
 	get geometry(){
 		return this.#geometry;
 	}
 
-	set geometry(value: THREE.BufferGeometry){
+	set geometry(value: Three.BufferGeometry){
 		this.#geometry = value;
 		this.#geometry.userData.owner = this;
 		this.object3d.geometry = value;
 	}
 
-	#material: THREE.Material
+	#material: Three.Material
 
 	get material(){
 		return this.#material;
 	}
 
-	set material(value: THREE.Material){
+	set material(value: Three.Material){
 		this.#material = value;
 		this.object3d.material = value;
 	}
 
-	constructor(geometry: THREE.BufferGeometry, material: THREE.Material){
+	constructor(geometry: Three.BufferGeometry, material: Three.Material){
 		super();
 		this.#geometry = geometry;
 		this.#geometry.userData.owner = this;

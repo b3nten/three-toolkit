@@ -1,4 +1,4 @@
-import * as three from "three";
+import * as Three from "three";
 import { Scene } from "./scene";
 import { GameObject } from "./gameobject";
 import { Behavior } from "./behavior";
@@ -50,7 +50,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsPerspectiveCamera(camera: three.Camera): camera is three.PerspectiveCamera {
+	static IsPerspectiveCamera(camera: Three.Camera): camera is Three.PerspectiveCamera {
 		return "isPerspectiveCamera" in camera;
 	}
 
@@ -60,7 +60,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsOrthographicCamera(camera: any): camera is three.OrthographicCamera {
+	static IsOrthographicCamera(camera: any): camera is Three.OrthographicCamera {
 		return "isOrthographicCamera" in camera;
 	}
 
@@ -70,7 +70,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsRenderItem(obj: any): obj is three.RenderItem {
+	static IsRenderItem(obj: any): obj is Three.RenderItem {
 		return "geometry" in obj && "material" in obj;
 	}
 
@@ -80,7 +80,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsMesh(obj: any): obj is three.Mesh {
+	static IsMesh(obj: any): obj is Three.Mesh {
 		return "isMesh" in obj;
 	}
 
@@ -90,7 +90,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsLight(obj: any): obj is three.Light {
+	static IsLight(obj: any): obj is Three.Light {
 		return "isLight" in obj;
 	}
 
@@ -100,7 +100,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsMaterial(obj: any): obj is three.Material {
+	static IsMaterial(obj: any): obj is Three.Material {
 		return "isMaterial" in obj;
 	}
 
@@ -110,7 +110,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsGeometry(obj: any): obj is three.BufferGeometry {
+	static IsGeometry(obj: any): obj is Three.BufferGeometry {
 		return "isBufferGeometry" in obj;
 	}
 
@@ -120,7 +120,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsThreeScene(obj: any): obj is three.Scene {
+	static IsThreeScene(obj: any): obj is Three.Scene {
 		return "isScene" in obj;
 	}
 
@@ -130,7 +130,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsCamera(obj: any): obj is three.Camera {
+	static IsCamera(obj: any): obj is Three.Camera {
 		return "isCamera" in obj;
 	}
 
@@ -140,7 +140,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsObject3D(obj: any): obj is three.Object3D {
+	static IsObject3D(obj: any): obj is Three.Object3D {
 		return "isObject3D" in obj;
 	}
 
@@ -150,7 +150,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsTexture(obj: any): obj is three.Texture {
+	static IsTexture(obj: any): obj is Three.Texture {
 		return "isTexture" in obj;
 	}
 
@@ -160,7 +160,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsWebGLRenderer(obj: any): obj is three.WebGLRenderer {
+	static IsWebGLRenderer(obj: any): obj is Three.WebGLRenderer {
 		return "isWebGLRenderer" in obj;
 	}
 
@@ -170,7 +170,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsClock(obj: any): obj is three.Clock {
+	static IsClock(obj: any): obj is Three.Clock {
 		return "isClock" in obj;
 	}
 
@@ -180,7 +180,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsVector3(obj: any): obj is three.Vector3 {
+	static IsVector3(obj: any): obj is Three.Vector3 {
 		return "isVector3" in obj;
 	}
 
@@ -190,7 +190,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsVector2(obj: any): obj is three.Vector2 {
+	static IsVector2(obj: any): obj is Three.Vector2 {
 		return "isVector2" in obj;
 	}
 
@@ -200,7 +200,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsColor(obj: any): obj is three.Color {
+	static IsColor(obj: any): obj is Three.Color {
 		return "isColor" in obj;
 	}
 
@@ -210,7 +210,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsQuaternion(obj: any): obj is three.Quaternion {
+	static IsQuaternion(obj: any): obj is Three.Quaternion {
 		return "isQuaternion" in obj;
 	}
 
@@ -220,7 +220,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsEuler(obj: any): obj is three.Euler {
+	static IsEuler(obj: any): obj is Three.Euler {
 		return "isEuler" in obj;
 	}
 
@@ -230,7 +230,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsMatrix4(obj: any): obj is three.Matrix4 {
+	static IsMatrix4(obj: any): obj is Three.Matrix4 {
 		return "isMatrix4" in obj;
 	}
 
@@ -240,7 +240,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsRaycaster(obj: any): obj is three.Raycaster {
+	static IsRaycaster(obj: any): obj is Three.Raycaster {
 		return "isRaycaster" in obj;
 	}
 
@@ -250,7 +250,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsBox3(obj: any): obj is three.Box3 {
+	static IsBox3(obj: any): obj is Three.Box3 {
 		return "isBox3" in obj;
 	}
 
@@ -260,7 +260,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsSphere(obj: any): obj is three.Sphere {
+	static IsSphere(obj: any): obj is Three.Sphere {
 		return "isSphere" in obj;
 	}
 
@@ -270,7 +270,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsPlane(obj: any): obj is three.Plane {
+	static IsPlane(obj: any): obj is Three.Plane {
 		return "isPlane" in obj;
 	}
 
@@ -280,7 +280,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsFrustum(obj: any): obj is three.Frustum {
+	static IsFrustum(obj: any): obj is Three.Frustum {
 		return "isFrustum" in obj;
 	}
 
@@ -291,7 +291,7 @@ export class Asserts {
 	 * @returns {boolean}
 	 */
 
-	static IsLine(obj: any): obj is three.Line {
+	static IsLine(obj: any): obj is Three.Line {
 		return "isLine" in obj;
 	}
 
@@ -301,7 +301,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsPoints(obj: any): obj is three.Points {
+	static IsPoints(obj: any): obj is Three.Points {
 		return "isPoints" in obj;
 	}
 
@@ -311,7 +311,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsGroup(obj: any): obj is three.Group {
+	static IsGroup(obj: any): obj is Three.Group {
 		return "isGroup" in obj;
 	}
 
@@ -321,7 +321,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsInstancedMesh(obj: any): obj is three.InstancedMesh {
+	static IsInstancedMesh(obj: any): obj is Three.InstancedMesh {
 		return "isInstancedMesh" in obj;
 	}
 
@@ -331,7 +331,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsSkinnedMesh(obj: any): obj is three.SkinnedMesh {
+	static IsSkinnedMesh(obj: any): obj is Three.SkinnedMesh {
 		return "isSkinnedMesh" in obj;
 	}
 
@@ -341,7 +341,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsSprite(obj: any): obj is three.Sprite {
+	static IsSprite(obj: any): obj is Three.Sprite {
 		return "isSprite" in obj;
 	}
 
@@ -351,7 +351,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsLineSegments(obj: any): obj is three.LineSegments {
+	static IsLineSegments(obj: any): obj is Three.LineSegments {
 		return "isLineSegments" in obj;
 	}
 
@@ -361,7 +361,7 @@ export class Asserts {
 	 * @constructor
 	 * @returns {boolean}
 	 */
-	static IsLineLoop(obj: any): obj is three.LineLoop {
+	static IsLineLoop(obj: any): obj is Three.LineLoop {
 		return "isLineLoop" in obj;
 	}
 }

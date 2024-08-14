@@ -1,16 +1,18 @@
 ﻿import { Scene } from "./scene";
 import { ASSERT, Asserts } from "./asserts";
-import { Clock, WebGLRenderer } from "three";
+import * as Three from "three";
 
 export class Game {
 	currentScene?: Scene;
 	currentSceneLoaded: boolean = false;
 
-	renderer: WebGLRenderer;
+	renderer: Three.WebGLRenderer;
 	renderTarget: HTMLCanvasElement;
 
 	constructor(args: { target?: HTMLCanvasElement } = {}){
-		this.renderer = new WebGLRenderer({ canvas: args.target });
+		this.renderer = new Three.WebGLRenderer({
+			canvas: args.target,
+		});
 		this.renderTarget = this.renderer.domElement;
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.#resize();
@@ -42,7 +44,7 @@ export class Game {
 		requestAnimationFrame(this.#gameloop.bind(this))
 	}
 
-	clock = new Clock()
+	clock = new Three.Clock()
 
 	#gameloop(){
 		requestAnimationFrame(this.#gameloop.bind(this))

@@ -1,5 +1,5 @@
 import { Behavior } from "../behavior";
-import * as three from "three"
+import * as Three from "three"
 
 type FloatArgs = {
 	offset?: number;
@@ -37,7 +37,7 @@ export class FloatBehavior extends Behavior {
 		this.parent.rotation.y = (Math.sin((t / 4) * this.speed * 2) / 8) * this.rotationIntensity
 		this.parent.rotation.z = (Math.sin((t / 4) * this.speed * 2) / 20) * this.rotationIntensity
 		let yPosition = Math.sin((t / 4) * this.speed * 2) / 10
-		yPosition = three.MathUtils.mapLinear(yPosition, -0.1, 0.1, this.floatingRange?.[0] ?? -0.1, this.floatingRange?.[1] ?? 0.1)
+		yPosition = Three.MathUtils.mapLinear(yPosition, -0.1, 0.1, this.floatingRange?.[0] ?? -0.1, this.floatingRange?.[1] ?? 0.1)
 		this.parent.position.y = yPosition * this.floatIntensity
 		this.parent.object3d.updateMatrix()
 	}
