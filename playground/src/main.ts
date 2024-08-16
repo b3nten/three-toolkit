@@ -1,7 +1,7 @@
 import "./styles.css";
 import * as Engine from "../../src/mod.ts"
 import * as Three from "three";
-import { ChromaticAberrationEffect, EffectPass, RenderPass, ToneMappingEffect, ToneMappingMode, FXAAEffect } from "postprocessing";
+import * as Effects from "postprocessing";
 
 const basicRP = new Engine.BasicRenderPipeline({ 
     canvas: document.getElementById("game") as HTMLCanvasElement,
@@ -13,10 +13,12 @@ const basicRP = new Engine.BasicRenderPipeline({
 const hdRP = new Engine.HighDefinitionRenderPipeline({
     canvas: document.getElementById("game") as HTMLCanvasElement,
     effects: () => [
-        new RenderPass(),
-        new EffectPass(undefined, new FXAAEffect),
-        new EffectPass(undefined, new ChromaticAberrationEffect),
-        new EffectPass(undefined, new ToneMappingEffect({mode: ToneMappingMode.ACES_FILMIC})),
+        new Effects.RenderPass(),
+        new Effects.EffectPass(undefined, new Effects.ChromaticAberrationEffect),
+        new Effects.EffectPass(undefined, new Effects.ToneMappingEffect({mode: Effects.ToneMappingMode.ACES_FILMIC})),
+        new Effects.EffectPass(undefined, new Effects.SMAAEffect({ 
+            preset: Effects.SMAAPreset.ULTRA,
+        })),
     ],
     devicePixelRatio: window.devicePixelRatio
 })

@@ -87,7 +87,7 @@ export class HighDefinitionRenderPipeline extends RenderPipeline {
 
 		this.effectComposer = new EffectComposer(this.renderer, {
 			frameBufferType: Three.HalfFloatType,
-			multisampling: args.multisampling ?? 4,
+			multisampling: args.multisampling ?? 0,
 		})
 
 		this.effects = args.effects;
@@ -108,7 +108,7 @@ export class HighDefinitionRenderPipeline extends RenderPipeline {
 	}
 
 	onResize(bounds: DOMRect): void {
-	    this.renderer.setSize(bounds.width, bounds.height, false)
+	    this.effectComposer.setSize(bounds.width, bounds.height, false)
 	}
 
 	render(){
