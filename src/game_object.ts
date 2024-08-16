@@ -2,19 +2,21 @@
 import * as Three from "three";
 import { Behavior } from "./behavior";
 import { destroy } from "./destroy";
-import { Asserts } from "./asserts";
+import { isBehavior, isGameObject } from "./assert";
 
 export class GameObject<T extends Three.Object3D = Three.Object3D> {
+
+	get isGameObject(){ return true; }
 
 	public id?: string | symbol;
 
 	public tags = new Set<string | symbol>;
 
-	object3d: T;
+	public object3d = new Three.Object3D;
 
-	scene: Scene | null = null;
+	public scene: Scene | null = null;
 
-	parent: GameObject | null = null;
+	public parent: GameObject | null = null;
 
 	get position() { return this.object3d.position; }
 
@@ -30,21 +32,22 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 	set visible(value: boolean) { this.object3d.visible = value; }
 
-	children: Set<GameObject | Behavior> = new Set;
+	public readonly children: Set<GameObject | Behavior> = new Set;
 
-	initialized = false;
-	spawned = false;
-	destroyed = false;
+	public initialized = false;
+
+	public spawned = false;
+
+	public destroyed = false;
 
 	constructor() {
-		this.object3d = new Three.Object3D;
 		this.object3d.userData.owner = this;
 	}
 
 	addChild<T extends GameObject | Behavior>(child: T): this {
 		if(this.destroyed) return this;
 
-		if(Asserts.IsGameObject(child.parent)){
+		if(isGameObject(child.parent)){
 			child.parent.removeChild(child)
 		}
 
@@ -54,7 +57,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 		child.parent = this;
 		child.scene = this.scene;
 
-		if(Asserts.IsGameObject(child)){
+		if(isGameObject(child)){
 			this.object3d.add(child.object3d)
 
 			if(child.id){
@@ -71,7 +74,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 			}
 		}
 
-		if(Asserts.IsBehavior(child)){
+		if(isBehavior(child)){
 			if(child.id){
 				this.scene?.behaviorsById.set(child.id, child)
 			}
@@ -104,7 +107,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 		this.children.delete(child)
 
-		if(Asserts.IsGameObject(child)){
+		if(isGameObject(child)){
 			this.object3d.remove(child.object3d)
 
 			if(child.id){
@@ -224,7 +227,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 	getBehaviorsByType<T extends string | symbol>(type: new () => T): T | null {
 		for(const child of this.children){
-			if(Asserts.IsBehavior(child) && child instanceof type){
+			if(isBehavior(child) && child instanceof type){
 				return child;
 			}
 		}
@@ -235,7 +238,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 		const behaviors: Behavior[] = [];
 		for(const child of this
 			.children){
-			if(Asserts.IsBehavior(child) && child.tags.has(tag)){
+			if(isBehavior(child) && child.tags.has(tag)){
 				behaviors.push(child);
 			}
 		}
@@ -244,7 +247,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 	getBehaviorById(id: string): Behavior | null {
 		for(const child of this.children){
-			if(Asserts.IsBehavior(child) && child.id === id){
+			if(isBehavior(child) && child.id === id){
 				return child;
 			}
 		}
@@ -253,7 +256,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 	getGameObjectByType<T extends GameObject>(type: new () => T): T | null {
 		for(const child of this.children){
-			if(Asserts.IsGameObject(child) && child instanceof type){
+			if(isGameObject(child) && child instanceof type){
 				return child;
 			}
 		}
@@ -262,7 +265,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 	getGameObjectById(id: string): GameObject | null {
 		for(const child of this.children){
-			if(Asserts.IsGameObject(child) && child.id === id){
+			if(isGameObject(child) && child.id === id){
 				return child;
 			}
 		}
@@ -273,7 +276,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 		const gameObjects: GameObject[] = [];
 		for(const child of this
 			.children){
-			if(Asserts.IsGameObject(child) && child.tags.has(tag)){
+			if(isGameObject(child) && child.tags.has(tag)){
 				gameObjects.push(child);
 			}
 		}

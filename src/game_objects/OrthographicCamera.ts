@@ -1,6 +1,6 @@
-import { GameObject } from "../gameobject";
+import { GameObject } from "../game_object";
 import * as Three from "three"
-import { ASSERT } from "../asserts";
+import { ASSERT } from "../assert";
 
 export class OrthographicCameraObject extends GameObject<Three.OrthographicCamera> {
 	

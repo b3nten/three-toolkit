@@ -1,5 +1,5 @@
 import * as Three from "three"
-import { GameObject } from "../gameobject";
+import { GameObject } from "../game_object";
 
 
 const PRIMITIVE_COLOR = '#c4c4c4'

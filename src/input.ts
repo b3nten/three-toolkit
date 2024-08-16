@@ -9,21 +9,11 @@ function createKeyState(): KeyState {
 	return { pressed: false }
 }
 
-// mouse1, mouse2, mouse3
-// wheelUp, wheelDown
-// click
-
 export class InputQueue {
 
-	#states: Record<string, KeyState> = {};
+	public queue: Array<{key: string, state: KeyState}> = [];
 
-	#inputDownCallbacks = new Map<string, Set<InputCallback>>;
-
-	#inputUpCallbacks = new Map<string, Set<InputCallback>>;
-
-	queue: Array<{key: string, state: KeyState}> = [];
-
-	enabled = false;
+	public enabled = false;
 
 	constructor(){
 		this.enable = this.enable.bind(this);
@@ -32,34 +22,37 @@ export class InputQueue {
 		this.onInputDown = this.onInputDown.bind(this);
 		this.onInputUp = this.onInputUp.bind(this);
 		this.onInput = this.onInput.bind(this);
+		this.replay = this.replay.bind(this);
+		this.keydown = this.keydown.bind(this);
+		this.keyup = this.keyup.bind(this);
 
 		typeof window !== "undefined" && this.enable();
 	}
 
 	enable(){
 		this.enabled = true;
-		window.addEventListener("keydown", this.#keydown.bind(this))
-		window.addEventListener("keyup", this.#keyup.bind(this))
-		window.addEventListener("mousedown", this.#keydown.bind(this))
-		window.addEventListener("mouseup", this.#keyup.bind(this))
-		window.addEventListener("wheel", this.#keydown.bind(this))
+		window.addEventListener("keydown", this.keydown.bind(this))
+		window.addEventListener("keyup", this.keyup.bind(this))
+		window.addEventListener("mousedown", this.keydown.bind(this))
+		window.addEventListener("mouseup", this.keyup.bind(this))
+		window.addEventListener("wheel", this.keydown.bind(this))
 	}
 
 	disable(){
 		this.enabled = false;
-		window.removeEventListener("keydown", this.#keydown.bind(this))
-		window.removeEventListener("keyup", this.#keyup.bind(this))
-		window.removeEventListener("mousedown", this.#keydown.bind(this))
-		window.removeEventListener("mouseup", this.#keyup.bind(this))
-		window.removeEventListener("wheel", this.#keydown.bind(this))
+		window.removeEventListener("keydown", this.keydown.bind(this))
+		window.removeEventListener("keyup", this.keyup.bind(this))
+		window.removeEventListener("mousedown", this.keydown.bind(this))
+		window.removeEventListener("mouseup", this.keyup.bind(this))
+		window.removeEventListener("wheel", this.keydown.bind(this))
 	}
 
 	getCurrentState(){
-		return this.#states;
+		return this.states;
 	}
 
 	getKey(key: string): KeyState {
-		return this.#states[key] ?? createKeyState()
+		return this.states[key] ?? createKeyState()
 	}
 
 	onInputDown(key: string | string[], callback: InputCallback): Function {
@@ -67,11 +60,11 @@ export class InputQueue {
 		const cleanup: Function[] = [];
 
 		for(const k of keys){
-			if(!this.#inputDownCallbacks.has(k)){
-				this.#inputDownCallbacks.set(k, new Set)
+			if(!this.inputDownCallbacks.has(k)){
+				this.inputDownCallbacks.set(k, new Set)
 			}
-			this.#inputDownCallbacks.get(k)!.add(callback)
-			cleanup.push(() => void this.#inputDownCallbacks.get(k)?.delete(callback));
+			this.inputDownCallbacks.get(k)!.add(callback)
+			cleanup.push(() => void this.inputDownCallbacks.get(k)?.delete(callback));
 		}
 		return () => void cleanup.forEach(fn => fn());
 	}
@@ -81,11 +74,11 @@ export class InputQueue {
 		const cleanup: Function[] = [];
 
 		for(const k of keys){
-			if(!this.#inputUpCallbacks.has(k)){
-				this.#inputUpCallbacks.set(k, new Set)
+			if(!this.inputUpCallbacks.has(k)){
+				this.inputUpCallbacks.set(k, new Set)
 			}
-			this.#inputUpCallbacks.get(k)!.add(callback)
-			cleanup.push(() => void this.#inputUpCallbacks.get(k)?.delete(callback));
+			this.inputUpCallbacks.get(k)!.add(callback)
+			cleanup.push(() => void this.inputUpCallbacks.get(k)?.delete(callback));
 		}
 		return () => void cleanup.forEach(fn => fn());
 	}
@@ -99,18 +92,24 @@ export class InputQueue {
 	replay(){
 		for(const e of this.queue){
 			const { key, state } = e;
-			this.#states[key] = state;
+			this.states[key] = state;
 			if(state.pressed){
-				this.#inputDownCallbacks.get(key)?.forEach(cb => cb(key, this.#states));
+				this.inputDownCallbacks.get(key)?.forEach(cb => cb(key, this.states));
 			} else {
-				this.#inputUpCallbacks.get(key)?.forEach(cb => cb(key, this.#states));
+				this.inputUpCallbacks.get(key)?.forEach(cb => cb(key, this.states));
 			}
 		}
 
 		this.queue.length = 0;
 	}
 
-	#keydown(e: KeyboardEvent | MouseEvent | WheelEvent){
+	private states: Record<string, KeyState> = {};
+
+	private inputDownCallbacks = new Map<string, Set<InputCallback>>;
+
+	private inputUpCallbacks = new Map<string, Set<InputCallback>>;
+
+	private keydown(e: KeyboardEvent | MouseEvent | WheelEvent){
 		if(!this.enabled) return;
 		const key = e instanceof KeyboardEvent 
 			? e.key 
@@ -120,7 +119,7 @@ export class InputQueue {
 		this.queue.push({key, state: { pressed: true } });
 	}
 
-	#keyup(e: KeyboardEvent | MouseEvent | WheelEvent){
+	private keyup(e: KeyboardEvent | MouseEvent | WheelEvent){
 		if(!this.enabled) return;
 		const key = e instanceof KeyboardEvent 
 			? e.key 

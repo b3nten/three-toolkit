@@ -1,5 +1,5 @@
 import { Behavior } from "../behavior";
-import { PerspectiveCameraObject } from "../gameobjects/PerspectiveCamera";
+import { PerspectiveCameraObject } from "../game_objects/PerspectiveCamera";
 import { OrbitControls } from "three-stdlib";
 import { ASSERT } from "../asserts";
 

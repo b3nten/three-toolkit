@@ -1,5 +1,5 @@
 import * as Three from "three";
-import { Asserts } from "./asserts";
+import { isObject3D, isRenderItem } from "./assert";
 
 /****************************************************************************************
  * Adopted from Lume, thank you <3
@@ -9,7 +9,7 @@ import { Asserts } from "./asserts";
 function disposeObject(obj: Three.Object3D) {
   if (!obj) return;
 
-  if (Asserts.IsRenderItem(obj)) {
+  if (isRenderItem(obj)) {
     if (obj.geometry) obj.geometry.dispose();
     const materials: Three.Material[] = ([] as Three.Material[]).concat(
       obj.material,
@@ -25,6 +25,6 @@ function disposeObject(obj: Three.Object3D) {
 }
 
 export function destroy(obj: Three.Object3D) {
-  if(!Asserts.IsObject3D(obj)) return;
+  if(!isObject3D(obj)) return;
   obj.traverse(disposeObject);
 }

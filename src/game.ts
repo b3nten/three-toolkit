@@ -1,9 +1,9 @@
 ﻿import { Scene } from "./scene";
-import { ASSERT, Asserts } from "./asserts";
+import { ASSERT} from "./assert";
 import * as Three from "three";
 import { SoundManager } from "./audio";
 import { InputQueue } from "./input";
-import { RenderPipeline } from "./renderpipeline";
+import { RenderPipeline } from "./render_pipeline";
 
 export class Game {
 
@@ -35,7 +35,6 @@ export class Game {
 	public async loadScene(scene: Scene){
 
 		ASSERT(scene, "Scene must be defined");
-		ASSERT(Asserts.IsScene(scene), "Scene must be a Scene");
 
 		if(this.currentScene){
 			this.currentScene.destructor?.();

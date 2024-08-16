@@ -1,7 +1,9 @@
-﻿import { GameObject } from "./gameobject";
+﻿import { GameObject } from "./game_object";
 import { Scene } from "./scene";
 
 export class Behavior {
+
+	get isBehavior(){ return true; }
 
 	public id?: string | symbol;
 

@@ -1,0 +1,38 @@
+import { SceneObject } from "./game_objects/SceneObject";
+import { Game } from "./game";
+import { Behavior } from "./behavior";
+import { SoundManager } from "./audio";
+import * as Three from "three";
+import { GameObject } from "./game_object";
+import { InputQueue } from "./input";
+export declare abstract class Scene {
+    #private;
+    game?: Game;
+    root: SceneObject;
+    behaviorsById: Map<string | symbol, Behavior>;
+    behaviorsByTag: Map<string | symbol, Set<Behavior>>;
+    gameObjectsById: Map<string | symbol, GameObject<Three.Object3D<Three.Object3DEventMap>>>;
+    gameObjectsByTag: Map<string | symbol, Set<GameObject<Three.Object3D<Three.Object3DEventMap>>>>;
+    get sound(): SoundManager;
+    get input(): InputQueue;
+    get clock(): Three.Clock;
+    get pointerIntersections(): Set<GameObject<Three.Object3D<Three.Object3DEventMap>>>;
+    get isLoading(): boolean;
+    get hasLoaded(): boolean;
+    get hasStarted(): boolean;
+    get isPlaying(): boolean;
+    get isEnding(): boolean;
+    get isDestroyed(): boolean;
+    constructor();
+    setup(): Promise<void>;
+    play(): void;
+    update(frametime: number, elapsedtime: number): void;
+    endPlay(): void;
+    destructor(): void;
+    getBehaviorById(id: string | symbol): Behavior | undefined;
+    getBehaviorsByTag(tag: string | symbol): Set<Behavior>;
+    getGameObjectById(id: string | symbol): GameObject | undefined;
+    getGameObjectsByTag(tag: string | symbol): Set<GameObject>;
+    getActiveCamera(): GameObject<Three.Camera> | undefined;
+    setActiveCamera(gameObject: GameObject): void;
+}

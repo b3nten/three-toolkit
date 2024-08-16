@@ -1,9 +1,9 @@
-import { SceneObject } from "./gameobjects/SceneObject";
+import { SceneObject } from "./game_objects/SceneObject";
 import { Game } from "./game";
 import { Behavior } from "./behavior";
 import { SoundManager } from "./audio";
 import * as Three from "three"
-import { GameObject } from "./gameobject";
+import { GameObject } from "./game_object";
 import { ActiveCamera } from "./mod";
 import { InputQueue } from "./input";
 

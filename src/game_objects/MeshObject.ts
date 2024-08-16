@@ -1,4 +1,4 @@
-import { GameObject } from "../gameobject";
+import { GameObject } from "../game_object";
 import * as Three from "three"
 
 export class MeshObject<T extends Three.Mesh = Three.Mesh> extends GameObject<Three.Mesh> {
