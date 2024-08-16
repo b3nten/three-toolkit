@@ -2,6 +2,11 @@
 import { Scene } from "./scene";
 
 export class Behavior {
+
+	public id?: string | symbol;
+
+	public tags = new Set<string | symbol>;
+
 	parent: GameObject | null = null;
 
 	scene: Scene | null = null;

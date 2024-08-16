@@ -22,8 +22,7 @@ type PrimitiveArgs = {
 	scale?: Three.Vector3
 }
 
-export class PrimitiveCubeObject extends GameObject {
-	declare object3d: Three.Mesh;
+export class PrimitiveCubeObject extends GameObject<Three.Mesh> {
 
 	#material: PrimitiveMeshMaterial;
 

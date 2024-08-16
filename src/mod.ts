@@ -17,8 +17,8 @@ export { SkeletalMeshObject } from "./gameobjects/SkeletalMeshObject";
 export { PerspectiveCameraObject } from "./gameobjects/PerspectiveCamera";
 export { OrthographicCameraObject } from "./gameobjects/OrthographicCamera";
 
-export { BasicScene } from "./scenes/BasicScene";
-export { HighResScene } from "./scenes/HighResScene";
+export { AssetLoader, EnvironmentAsset, GltfAsset, TextureAsset, Asset } from "./assets";
 
-export { AssetLoader } from "./assets";
-export { EnvironmentAsset } from "./assets";
+export const ActiveCamera = Symbol.for("ETag:ActiveCamera")
+
+export { RenderPipeline, BasicRenderPipeline, HighDefinitionRenderPipeline } from "./renderpipeline"

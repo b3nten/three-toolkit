@@ -1,60 +1,57 @@
 import "./styles.css";
 import * as Engine from "../../src/mod.ts"
 import * as Three from "three";
-import {
-    BloomEffect,
-    ChromaticAberrationEffect,
-    EffectPass,
-    LensDistortionEffect,
-    RenderPass,
-    ToneMappingEffect
-} from "postprocessing";
+import { ChromaticAberrationEffect, EffectPass, RenderPass, ToneMappingEffect, ToneMappingMode, FXAAEffect } from "postprocessing";
 
-const game = new Engine.Game({ target: document.getElementById("game") as HTMLCanvasElement })
-
-const assets = new Engine.AssetLoader({
-    env: new Engine.EnvironmentAsset(
-        "https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/potsdamer_platz_1k.hdr")
+const basicRP = new Engine.BasicRenderPipeline({ 
+    canvas: document.getElementById("game") as HTMLCanvasElement,
+    toneMapping: Three.ACESFilmicToneMapping,   
+    toneMappingExposure: 1,
+    devicePixelRatio: window.devicePixelRatio,
 })
 
-class TestScene extends Engine.HighResScene {
+const hdRP = new Engine.HighDefinitionRenderPipeline({
+    canvas: document.getElementById("game") as HTMLCanvasElement,
+    effects: () => [
+        new RenderPass(),
+        new EffectPass(undefined, new FXAAEffect),
+        new EffectPass(undefined, new ChromaticAberrationEffect),
+        new EffectPass(undefined, new ToneMappingEffect({mode: ToneMappingMode.ACES_FILMIC})),
+    ],
+    devicePixelRatio: window.devicePixelRatio
+})
 
-    override createEffectPipeline(scene: Three.Scene, camera: Three.PerspectiveCamera) {
-        return [
-            new RenderPass(scene, camera),
-            new EffectPass(camera, new BloomEffect),
-            new EffectPass(camera, new ChromaticAberrationEffect),
-            new EffectPass(camera, new LensDistortionEffect),
-            new EffectPass(camera, new ToneMappingEffect({ mode: Three.ACESFilmicToneMapping }))
-        ]
-    }
+const game = new Engine.Game({ renderPipeline: hdRP })
+
+class TestScene extends Engine.Scene {
+    environment = new Engine.EnvironmentObject({ background: true, backgroundBlur: 2 })
+
+    camera = new Engine.PerspectiveCameraObject;
 
     override async setup(){
-        await super.setup()
+        await super.setup();
 
-        await assets.load()
+        this.camera
+            .addChild(new Engine.CameraOrbitBehavior)
+            .addTag(Engine.ActiveCamera)
+            .position.z = 5;
 
-        this.environment.texture = assets.data.env;
-        this.environment.backgroundBlur = 1;
+        this.root.addChild(this.camera)
+
+        this.root.addChild(this.environment)
 
         this.root.addChild(
-            new Engine.PrimitiveCubeObject().addChild(new Engine.FloatBehavior)
+            new Engine.PrimitiveCubeObject()
+                .addChild(new Engine.FloatBehavior)
         )
-
-        this.camera.addChild(new Engine.CameraOrbitBehavior)
     }
 }
 
-const target = document.getElementById("game") as HTMLCanvasElement;
-
-if(!target) {
-    throw new Error("No target element found")
+async function main(){
+    console.log("Loading scene")
+    await game.loadScene(new TestScene)
+    console.log("Playing scene")
+    game.play()
 }
 
-console.log("Loading scene")
-
-await game.loadScene(new TestScene)
-
-console.log("Playing scene")
-
-game.play()
+main()

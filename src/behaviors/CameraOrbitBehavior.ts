@@ -12,9 +12,11 @@ export class CameraOrbitBehavior extends Behavior {
 
 		if(!(this.parent instanceof PerspectiveCameraObject)) return;
 
-		ASSERT(this.scene?.game?.renderTarget, "Renderer must be defined");
+		const renderer = this.scene!.game!.renderPipeline.getRenderer()
 
-		this.controls = new OrbitControls(this.parent.object3d, this.scene.game.renderTarget);
+		ASSERT(renderer, "Renderer must be defined");
+
+		this.controls = new OrbitControls(this.parent.object3d, renderer.domElement);
 	}
 
 	onUpdate(frametime: number, elapsedtime: number) {

@@ -1,53 +1,88 @@
 ﻿import { Scene } from "./scene";
 import { ASSERT, Asserts } from "./asserts";
 import * as Three from "three";
+import { SoundManager } from "./audio";
+import { InputQueue } from "./input";
+import { RenderPipeline } from "./renderpipeline";
 
 export class Game {
-	currentScene?: Scene;
-	currentSceneLoaded: boolean = false;
 
-	renderer: Three.WebGLRenderer;
-	renderTarget: HTMLCanvasElement;
+	public currentScene: Scene | null = null;
 
-	constructor(args: { target?: HTMLCanvasElement } = {}){
-		this.renderer = new Three.WebGLRenderer({
-			canvas: args.target,
-		});
-		this.renderTarget = this.renderer.domElement;
-		this.renderer.setPixelRatio(window.devicePixelRatio);
-		this.#resize();
-		window.addEventListener("resize", this.#resize.bind(this))
+	public currentSceneLoaded: boolean = false;
+
+	public sound = new SoundManager;
+
+	public input = new InputQueue;
+
+	public clock = new Three.Clock;
+
+	public pointer = new Three.Vector2;
+
+	public renderPipeline: RenderPipeline;
+
+	constructor(args: { renderPipeline: RenderPipeline }){
+
+		this.loadScene = this.loadScene.bind(this);
+		this.play = this.play.bind(this);
+		this.gameloop = this.gameloop.bind(this);
+		this.resize = this.resize.bind(this);
+		this.onPointerMove = this.onPointerMove.bind(this);
+
+		this.renderPipeline = args.renderPipeline;
 	}
 
-	#resize(){
-		const bounds = this.renderTarget.getBoundingClientRect();
-		this.renderer.setSize(bounds.width, bounds.height, false)
-		this.currentScene?.root.resize(bounds)
-	}
+	public async loadScene(scene: Scene){
 
-	async loadScene(scene: Scene){
 		ASSERT(scene, "Scene must be defined");
 		ASSERT(Asserts.IsScene(scene), "Scene must be a Scene");
+
 		if(this.currentScene){
 			this.currentScene.destructor?.();
 		}
+
 		scene.game = this;
+
 		this.currentScene = scene;
+
 		await scene.setup?.();
+
+		this.renderPipeline.onLoadScene?.(this, scene);
+
+		this.renderPipeline.getRenderer()
+			.domElement.addEventListener("mousemove", this.onPointerMove.bind(this))
+
+		window.addEventListener("resize", this.resize.bind(this))
+
+		this.resize();
+
 		this.currentSceneLoaded = true;
 	}
 
-	play(){
+	public play(){
 		ASSERT(this.currentSceneLoaded, "Scene must be loaded before playing");
 		ASSERT(this.currentScene)
+
+		this.clock.elapsedTime = 0;
+
 		this.currentScene.play();
-		requestAnimationFrame(this.#gameloop.bind(this))
+
+		requestAnimationFrame(this.gameloop.bind(this))
 	}
 
-	clock = new Three.Clock()
+	private gameloop(){
+		requestAnimationFrame(this.gameloop.bind(this))
+		this.currentScene!.update(this.clock.getDelta(), this.clock.getElapsedTime())
+	}
 
-	#gameloop(){
-		requestAnimationFrame(this.#gameloop.bind(this))
-		this.currentScene?.update(this.clock.getDelta(), this.clock.getElapsedTime())
+	private resize(){
+		const bounds = this.renderPipeline.getRenderer().domElement.getBoundingClientRect()
+		this.renderPipeline.onResize?.(bounds)
+		this.currentScene?.root.resize(bounds)
+	}
+
+	private onPointerMove(event: MouseEvent){
+		this.pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		this.pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 	}
 }

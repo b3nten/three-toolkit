@@ -1,7 +1,7 @@
 import { GameObject } from "../gameobject";
 import * as Three from "three"
 
-export class MeshObject extends GameObject {
+export class MeshObject<T extends Three.Mesh = Three.Mesh> extends GameObject<Three.Mesh> {
 
 	override object3d = new Three.Mesh()
 

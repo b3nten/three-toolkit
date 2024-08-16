@@ -1,5 +1,5 @@
 ﻿import * as Three from "three"
-import { EXRLoader, RGBELoader } from "three-stdlib";
+import { EXRLoader, RGBELoader, GLTFLoader } from "three-stdlib";
 
 export enum State {
 	Idle,
@@ -315,3 +315,24 @@ export class EnvironmentAsset extends Asset<Three.Texture | Three.CubeTexture> {
 		}
 	}
 }
+
+export class TextureAsset extends Asset<Three.Texture> {
+	constructor(public readonly path: string) { super(); }
+
+	async loader() {
+		const loader = new Three.TextureLoader();
+		const texture = await loader.loadAsync(this.path, (e) => this.updateProgress(e.loaded / e.total));
+		return texture
+	}
+}
+
+export class GltfAsset extends Asset<Three.Group> {
+	constructor(public readonly path: string) { super(); }
+
+	async loader() {
+		const loader = new GLTFLoader();
+		const gltf = await loader.loadAsync(this.path, (e) => this.updateProgress(e.loaded / e.total));
+		return gltf.scene
+	}
+}
+

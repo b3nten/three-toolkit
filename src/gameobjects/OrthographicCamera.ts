@@ -2,9 +2,8 @@ import { GameObject } from "../gameobject";
 import * as Three from "three"
 import { ASSERT } from "../asserts";
 
-export class OrthographicCameraObject extends GameObject {
-	override object3d: Three.OrthographicCamera;
-
+export class OrthographicCameraObject extends GameObject<Three.OrthographicCamera> {
+	
 	#left: number;
 	get left() {
 		return this.#left;

@@ -4,9 +4,13 @@ import { Behavior } from "./behavior";
 import { destroy } from "./destroy";
 import { Asserts } from "./asserts";
 
-export class GameObject {
+export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
-	object3d: Three.Object3D;
+	public id?: string | symbol;
+
+	public tags = new Set<string | symbol>;
+
+	object3d: T;
 
 	scene: Scene | null = null;
 
@@ -46,10 +50,40 @@ export class GameObject {
 
 		this.children.add(child)
 
+
 		child.parent = this;
+		child.scene = this.scene;
 
 		if(Asserts.IsGameObject(child)){
 			this.object3d.add(child.object3d)
+
+			if(child.id){
+				this.scene?.gameObjectsById.set(child.id, child)
+			}
+			
+			if(child.tags){
+				for(const tag of child.tags){
+					if(!this.scene?.gameObjectsByTag.has(tag)){
+						this.scene?.gameObjectsByTag.set(tag, new Set)
+					}
+					this.scene?.gameObjectsByTag.get(tag)?.add(child)
+				}
+			}
+		}
+
+		if(Asserts.IsBehavior(child)){
+			if(child.id){
+				this.scene?.behaviorsById.set(child.id, child)
+			}
+
+			if(child.tags){
+				for(const tag of child.tags){
+					if(!this.scene?.behaviorsByTag.has(tag)){
+						this.scene?.behaviorsByTag.set(tag, new Set)
+					}
+					this.scene?.behaviorsByTag.get(tag)?.add(child)
+				}
+			}
 		}
 
 		if(this.initialized){
@@ -72,9 +106,34 @@ export class GameObject {
 
 		if(Asserts.IsGameObject(child)){
 			this.object3d.remove(child.object3d)
+
+			if(child.id){
+				this.scene?.gameObjectsById.delete(child.id)
+			}
+
+			if(child.tags){
+				for(const tag of child.tags){
+					this.scene?.gameObjectsByTag.get(tag)?.delete(child)
+				}
+			}
 		}
 
 		return child;
+	}
+
+	addTag(tag: string | symbol): this {
+		this.tags.add(tag);
+		if(!this.scene?.gameObjectsByTag.has(tag)){
+			this.scene?.gameObjectsByTag.set(tag, new Set)
+		}
+		this.scene?.gameObjectsByTag.get(tag)!.add(this)
+		return this;
+	}
+
+	removeTag(tag: string | symbol): this {
+		this.tags.delete(tag);
+		this.scene?.gameObjectsByTag.get(tag)?.delete(this)
+		return this;
 	}
 
 	create(){
@@ -143,4 +202,87 @@ export class GameObject {
 	onDespawn(): void {};
 	onResize(bounds: DOMRect): void {};
 	destructor(): void {};
+
+	getChildrenByTag(tag: string | symbol): (GameObject | Behavior)[] {
+		const children: (GameObject | Behavior)[] = [];
+		for(const child of this.children){
+			if(child.tags.has(tag)){
+				children.push(child)
+			}
+		}
+		return children
+	}
+
+	getChildById(id: string | symbol): GameObject | Behavior | null {
+		for(const child of this.children){
+			if(child.id === id){
+				return child;
+			}
+		}
+		return null;
+	}
+
+	getBehaviorsByType<T extends string | symbol>(type: new () => T): T | null {
+		for(const child of this.children){
+			if(Asserts.IsBehavior(child) && child instanceof type){
+				return child;
+			}
+		}
+		return null;
+	}
+
+	getBehaviorsByTag(tag: string | symbol): Behavior[] {
+		const behaviors: Behavior[] = [];
+		for(const child of this
+			.children){
+			if(Asserts.IsBehavior(child) && child.tags.has(tag)){
+				behaviors.push(child);
+			}
+		}
+		return behaviors;
+	}
+
+	getBehaviorById(id: string): Behavior | null {
+		for(const child of this.children){
+			if(Asserts.IsBehavior(child) && child.id === id){
+				return child;
+			}
+		}
+		return null;
+	}
+
+	getGameObjectByType<T extends GameObject>(type: new () => T): T | null {
+		for(const child of this.children){
+			if(Asserts.IsGameObject(child) && child instanceof type){
+				return child;
+			}
+		}
+		return null
+	}
+
+	getGameObjectById(id: string): GameObject | null {
+		for(const child of this.children){
+			if(Asserts.IsGameObject(child) && child.id === id){
+				return child;
+			}
+		}
+		return null;
+	}
+
+	getGameObjectsByTag(tag: string): GameObject[] {
+		const gameObjects: GameObject[] = [];
+		for(const child of this
+			.children){
+			if(Asserts.IsGameObject(child) && child.tags.has(tag)){
+				gameObjects.push(child);
+			}
+		}
+		return gameObjects;
+	}
+
+	*childs(): IterableIterator<GameObject | Behavior> {
+		for(const child of this.children){
+			yield child;
+		}
+	}
 }

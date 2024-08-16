@@ -160,16 +160,17 @@ export class EnvironmentObject extends Behavior {
 	}
 
 	#set() {
-		super.onCreate();
 
-		if(!this.scene || !this.scene.game?.renderer) return;
+		const renderer = this.scene?.game?.renderPipeline.getRenderer();
+
+		if(!this.scene || !renderer) throw new Error("Scene or renderer not found");
 
 		if(this.#texture){
 			this.scene.root.object3d.environment = this.#texture;
 		} else if(this.#envScene){
-			this.#texture = constructScene(this.#envScene, this.scene.root.object3d, this.scene.game?.renderer);
+			this.#texture = constructScene(this.#envScene, this.scene.root.object3d, renderer);
 		} else {
-			this.#texture = constructScene(createDefaultEnvironment(), this.scene.root.object3d, this.scene.game?.renderer);
+			this.#texture = constructScene(createDefaultEnvironment(), this.scene.root.object3d, renderer);
 		}
 
 		if(this.#background){

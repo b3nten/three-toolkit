@@ -3,7 +3,11 @@ import { Scene } from "./scene";
 import { GameObject } from "./gameobject";
 import { Behavior } from "./behavior";
 
-export { ASSERT } from "@benstack/toolkit/asserts"
+import { ASSERT } from "@benstack/toolkit/asserts";
+
+ASSERT.enabled = true;
+
+export { ASSERT }
 
 /**
  * Assertions

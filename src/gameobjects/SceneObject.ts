@@ -1,9 +1,7 @@
 import { GameObject } from "../gameobject";
 import * as Three from 'three';
 
-export class SceneObject extends GameObject {
-
-	override object3d: Three.Scene;
+export class SceneObject extends GameObject<Three.Scene> {
 
 	constructor() {
 		super();
