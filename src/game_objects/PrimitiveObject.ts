@@ -1,8 +1,7 @@
-import * as Three from "three"
+import * as Three from "three";
 import { GameObject } from "../game_object";
 
-
-const PRIMITIVE_COLOR = '#c4c4c4'
+const PRIMITIVE_COLOR = "#c4c4c4";
 
 type PrimitiveMeshMaterial =
 	| Three.MeshStandardMaterial
@@ -11,33 +10,35 @@ type PrimitiveMeshMaterial =
 	| Three.MeshMatcapMaterial
 	| Three.MeshPhongMaterial
 	| Three.MeshPhysicalMaterial
-	| Three.MeshToonMaterial
-
+	| Three.MeshToonMaterial;
 
 type PrimitiveArgs = {
-	material?: PrimitiveMeshMaterial
-	color?: string | Three.Color
-	position?: Three.Vector3
-	rotation?: Three.Euler
-	scale?: Three.Vector3
-}
+	material?: PrimitiveMeshMaterial;
+	color?: string | Three.Color;
+	position?: Three.Vector3;
+	rotation?: Three.Euler;
+	scale?: Three.Vector3;
+};
 
 export class PrimitiveCubeObject extends GameObject<Three.Mesh> {
-
 	#material: PrimitiveMeshMaterial;
 
-	get material(){ return this.#material; }
+	get material() {
+		return this.#material;
+	}
 
-	set material(value: PrimitiveMeshMaterial){
+	set material(value: PrimitiveMeshMaterial) {
 		this.#material = value;
 		this.object3d.material = value;
 	}
 
 	#color: string | Three.Color = PRIMITIVE_COLOR;
 
-	get color(){ return this.#color; }
+	get color() {
+		return this.#color;
+	}
 
-	set color(value: string | Three.Color){
+	set color(value: string | Three.Color) {
 		this.#color = value;
 		this.#material.color = new Three.Color(value);
 	}
@@ -45,30 +46,30 @@ export class PrimitiveCubeObject extends GameObject<Three.Mesh> {
 	constructor(args: PrimitiveArgs = {}) {
 		super();
 
-		if(args.color){
+		if (args.color) {
 			this.#color = args.color;
 		}
 
-		if(args.material){
-			this.#material = args.material
+		if (args.material) {
+			this.#material = args.material;
 		} else {
 			this.#material = new Three.MeshStandardMaterial({ color: this.#color });
 		}
 
 		this.object3d = new Three.Mesh(
 			new Three.BoxGeometry(1, 1, 1),
-			this.#material
+			this.#material,
 		);
 
-		if(args.position){
+		if (args.position) {
 			this.position.copy(args.position);
 		}
 
-		if(args.rotation){
+		if (args.rotation) {
 			this.rotation.copy(args.rotation);
 		}
 
-		if(args.scale){
+		if (args.scale) {
 			this.scale.copy(args.scale);
 		}
 

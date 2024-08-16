@@ -2,13 +2,34 @@ type RGB = [r: number, g: number, b: number];
 
 type Gradient = [start: RGB, end: RGB];
 
-const purpleGradient: Gradient = [[247, 81, 172], [55, 0, 231]]
-const sunsetGradient: Gradient = [[231, 0, 187], [255, 244, 20]]
-const grayGradient: Gradient = [[235, 244, 245], [181, 198, 224]]
-const orangeGradient: Gradient = [[255, 147, 15], [255, 249, 91]]
-const limeGradient: Gradient = [[89, 209, 2], [243, 245, 32]]
-const blueGradient: Gradient = [[31, 126, 161], [111, 247, 232]]
-const redGradient: Gradient = [[244, 7, 82], [249, 171, 143]]
+const purpleGradient: Gradient = [
+	[247, 81, 172],
+	[55, 0, 231],
+];
+const sunsetGradient: Gradient = [
+	[231, 0, 187],
+	[255, 244, 20],
+];
+const grayGradient: Gradient = [
+	[235, 244, 245],
+	[181, 198, 224],
+];
+const orangeGradient: Gradient = [
+	[255, 147, 15],
+	[255, 249, 91],
+];
+const limeGradient: Gradient = [
+	[89, 209, 2],
+	[243, 245, 32],
+];
+const blueGradient: Gradient = [
+	[31, 126, 161],
+	[111, 247, 232],
+];
+const redGradient: Gradient = [
+	[244, 7, 82],
+	[249, 171, 143],
+];
 
 const gradients = {
 	purple: purpleGradient,
@@ -24,8 +45,12 @@ const lerp = (start: number, end: number, factor: number) =>
 	start + factor * (end - start);
 
 export function interpolateRGB(startColor: RGB, endColor: RGB, t: number): RGB {
-	if (t < 0) { return startColor };
-	if (t > 1) { return endColor };
+	if (t < 0) {
+		return startColor;
+	}
+	if (t > 1) {
+		return endColor;
+	}
 	return [
 		Math.round(lerp(startColor[0], endColor[0], t)),
 		Math.round(lerp(startColor[1], endColor[1], t)),
@@ -48,7 +73,7 @@ export function formatAnsi(
 		underline?: boolean;
 		foreground?: RGB;
 		background?: RGB;
-	} = {}
+	} = {},
 ) {
 	let c = "";
 	if (styles.bold) c += "1;";
@@ -71,7 +96,7 @@ function formatBrowser(
 		underline?: boolean;
 		foreground?: RGB;
 		background?: RGB;
-	} = {}
+	} = {},
 ) {
 	const styles = [];
 	if (options.bold) styles.push("font-weight: bold;");
@@ -88,19 +113,12 @@ function formatBrowser(
 	};
 }
 
-export function format(
-	string: string,
-	options = {}
-) {
+export function format(string: string, options = {}) {
 	if (isBrowser()) return formatBrowser(string, options);
 	return formatAnsi(string, options);
 }
 
-export function stringGradient(
-	str: string,
-	gradient: Gradient,
-	options = {}
-) {
+export function stringGradient(str: string, gradient: Gradient, options = {}) {
 	const result = {
 		content: "",
 		styles: [] as string[],
@@ -109,18 +127,16 @@ export function stringGradient(
 		result.content = "%c" + str.split("").join("%c");
 		for (let i = 0; i < str.length; i++) {
 			const g = interpolateRGB(gradient[0], gradient[1], i / str.length);
-			result.styles.push(formatBrowser(str[i], { ...options, foreground: g }).styles[0]);
+			result.styles.push(
+				formatBrowser(str[i], { ...options, foreground: g }).styles[0],
+			);
 		}
 		return result;
 	}
 	for (let i = 0; i < str.length; i++) {
 		result.content += formatAnsi(str[i], {
 			...options,
-			foreground: interpolateRGB(
-				gradient[0],
-				gradient[1],
-				i / str.length
-			),
+			foreground: interpolateRGB(gradient[0], gradient[1], i / str.length),
 		}).content;
 	}
 	return result;
@@ -130,28 +146,31 @@ function toBoolean(val: any) {
 	return val ? val !== "false" : false;
 }
 
-const env = globalThis.process?.env 
+const env =
+	globalThis.process?.env ||
 	// @ts-ignore
-	|| import.meta.env 
+	import.meta.env ||
 	// @ts-ignore
-	|| globalThis.Deno?.env.toObject() 
+	globalThis.Deno?.env.toObject() ||
 	// @ts-ignore
-	|| globalThis.__env__ 
-	|| globalThis;
+	globalThis.__env__ ||
+	globalThis;
 
 const hasTTY = toBoolean(
-  globalThis.process?.stdout && globalThis.process?.stdout.isTTY,
+	globalThis.process?.stdout && globalThis.process?.stdout.isTTY,
 );
 
 const isWindows = /^win/i.test(globalThis.process?.platform || "");
 
-const isCI = toBoolean(env.CI)
+const isCI = toBoolean(env.CI);
 
-const isColorSupported = (typeof document !== "undefined") 
-	|| !toBoolean(env.NO_COLOR) 
-	&& (toBoolean(env.FORCE_COLOR) || ((hasTTY || isWindows) && env.TERM !== "dumb"));
+const isColorSupported =
+	typeof document !== "undefined" ||
+	(!toBoolean(env.NO_COLOR) &&
+		(toBoolean(env.FORCE_COLOR) ||
+			((hasTTY || isWindows) && env.TERM !== "dumb")));
 
-const enum LogLevel {
+enum LogLevel {
 	Debug = 100,
 	Success = 200,
 	Info = 250,
@@ -169,9 +188,9 @@ interface ConsoleWriter {
 class FancyConsoleWriter implements ConsoleWriter {
 	name: string;
 
-	formattedName: { content: string; styles: string[]; };
+	formattedName: { content: string; styles: string[] };
 
-	levels: Record<string, { content: string; styles: string[]; }>;
+	levels: Record<string, { content: string; styles: string[] }>;
 
 	constructor(name: string, color: [RGB, RGB]) {
 		this.name = name;
@@ -192,159 +211,157 @@ class FancyConsoleWriter implements ConsoleWriter {
 	}
 
 	write(level: LogLevel, message: any[]) {
-		if(level === LogLevel.Debug) return this.writeDebug(message);
-		if(level === LogLevel.Info) return this.writeInfo(message);
-		if(level === LogLevel.Success) return this.writeSuccess(message);
-		if(level === LogLevel.Warn) return this.writeWarn(message);
-		if(level === LogLevel.Error) return this.writeError(message);
-		if(level === LogLevel.Critical) return this.writeCritical(message);
+		if (level === LogLevel.Debug) return this.writeDebug(message);
+		if (level === LogLevel.Info) return this.writeInfo(message);
+		if (level === LogLevel.Success) return this.writeSuccess(message);
+		if (level === LogLevel.Warn) return this.writeWarn(message);
+		if (level === LogLevel.Error) return this.writeError(message);
+		if (level === LogLevel.Critical) return this.writeCritical(message);
 
 		console.log(
 			this.formattedName.content,
 			...this.formattedName.styles,
-			...message
+			...message,
 		);
 	}
 
 	writeDebug(message: any[]): void {
-	    console.log(
+		console.log(
 			`${this.formattedName.content} ${this.levels.debug.content}`,
 			...this.formattedName.styles,
 			...this.levels.debug.styles,
-			...message
+			...message,
 		);
 	}
 
 	writeInfo(message: any[]): void {
-	    console.log(
+		console.log(
 			`${this.formattedName.content} ${this.levels.info.content}`,
 			...this.formattedName.styles,
 			...this.levels.info.styles,
-			...message
+			...message,
 		);
 	}
 
 	writeSuccess(message: any[]): void {
-	    console.log(
+		console.log(
 			`${this.formattedName.content} ${this.levels.success.content}`,
 			...this.formattedName.styles,
 			...this.levels.success.styles,
-			...message
+			...message,
 		);
 	}
 
 	writeWarn(message: any[]): void {
-	    console.log(
+		console.log(
 			`${this.formattedName.content} ${this.levels.warn.content}`,
 			...this.formattedName.styles,
 			...this.levels.warn.styles,
-			...message
+			...message,
 		);
 	}
 
 	writeError(message: any[]): void {
-	    console.log(
+		console.log(
 			`${this.formattedName.content} ${this.levels.error.content}`,
 			...this.formattedName.styles,
 			...this.levels.error.styles,
-			...message
+			...message,
 		);
 	}
 
 	writeCritical(message: any[]): void {
-	    console.log(
+		console.log(
 			`${this.formattedName.content} ${this.levels.critical.content}`,
 			...this.formattedName.styles,
 			...this.levels.critical.styles,
-			...message
+			...message,
 		);
 	}
 }
 
 class SimpleConsoleWriter implements ConsoleWriter {
-
 	constructor(private name: string) {}
 
 	write(level: LogLevel, message: any[]) {
-		if(level === LogLevel.Debug) return this.writeDebug(message);
-		if(level === LogLevel.Info) return this.writeInfo(message);
-		if(level === LogLevel.Success) return this.writeSuccess(message);
-		if(level === LogLevel.Warn) return this.writeWarn(message);
-		if(level === LogLevel.Error) return this.writeError(message);
-		if(level === LogLevel.Critical) return this.writeCritical(message);
+		if (level === LogLevel.Debug) return this.writeDebug(message);
+		if (level === LogLevel.Info) return this.writeInfo(message);
+		if (level === LogLevel.Success) return this.writeSuccess(message);
+		if (level === LogLevel.Warn) return this.writeWarn(message);
+		if (level === LogLevel.Error) return this.writeError(message);
+		if (level === LogLevel.Critical) return this.writeCritical(message);
 
 		console.log(`[${this.name}]`, ...message);
 	}
 
 	writeDebug(message: any[]): void {
-	   console.debug(`[${this.name}]`, ...message);
+		console.debug(`[${this.name}]`, ...message);
 	}
 
 	writeInfo(message: any[]): void {
-	   console.info(`[${this.name}]`, ...message);
+		console.info(`[${this.name}]`, ...message);
 	}
 
 	writeSuccess(message: any[]): void {
-	   console.log(`[${this.name}] SUCCESS`, ...message);
+		console.log(`[${this.name}] SUCCESS`, ...message);
 	}
 
 	writeWarn(message: any[]): void {
-	   console.warn(`[${this.name}] WARN`, ...message);
+		console.warn(`[${this.name}] WARN`, ...message);
 	}
 
 	writeError(message: any[]): void {
-	   console.error(`[${this.name}] ERROR`, ...message);
+		console.error(`[${this.name}] ERROR`, ...message);
 	}
 
 	writeCritical(message: any[]): void {
-	   console.error(`[${this.name}] CRITICAL`, ...message);
+		console.error(`[${this.name}] CRITICAL`, ...message);
 	}
 }
 
 class Logger {
+	constructor(
+		public level: LogLevel,
+		public writer: ConsoleWriter,
+	) {}
 
-	constructor(public level: LogLevel, public writer: ConsoleWriter){}
-
-	logImpl(
-		level: LogLevel,
-		input: any[]
-	) {
-		if(level > LogLevel.Production || level < this.level) return;
+	logImpl(level: LogLevel, input: any[]) {
+		if (level > LogLevel.Production || level < this.level) return;
 		this.writer?.write(level, input);
 	}
 	/**
 	 * Log a message for debugging purposes.
-	 * @param  {...any} msg 
+	 * @param  {...any} msg
 	 * @returns void
 	 */
 	debug = (...msg: any[]) => this.logImpl(LogLevel.Debug, msg);
 	/**
 	 * Log a message that provides non critical information for the user.
-	 * @param  {...any} msg 
+	 * @param  {...any} msg
 	 * @returns void
 	 */
 	info = (...msg: any[]) => this.logImpl(LogLevel.Info, msg);
 	/**
 	 * Log a message that indicates a successful operation to the user.
-	 * @param  {...any} msg 
+	 * @param  {...any} msg
 	 * @returns void
 	 */
 	success = (...msg: any[]) => this.logImpl(LogLevel.Success, msg);
 	/**
 	 * Log a message that indicates a warning to the user.
-	 * @param  {...any} msg 
+	 * @param  {...any} msg
 	 * @returns void
 	 */
 	warn = (...msg: any[]) => this.logImpl(LogLevel.Warn, msg);
 	/**
 	 * Log a message that indicates an error to the user.
-	 * @param  {...any} msg 
+	 * @param  {...any} msg
 	 * @returns void
 	 */
 	error = (...msg: any[]) => this.logImpl(LogLevel.Error, msg);
 	/**
 	 * Log a message that indicates a critical error to the user.
-	 * @param  {...any} msg 
+	 * @param  {...any} msg
 	 * @returns void
 	 */
 	critical = (...msg: any[]) => this.logImpl(LogLevel.Critical, msg);
@@ -356,13 +373,17 @@ type LogConfig = {
 	level?: Logger["level"];
 	color?: [RGB, RGB];
 	writer?: Logger["writer"];
-}
+};
 
 function createLogger(name: string, config: LogConfig = {}) {
-	if(!name) throw new Error("Logger must have a name");
+	if (!name) throw new Error("Logger must have a name");
 	const level = config.level ?? Logger.LogLevels.INFO;
 	const color = config.color ?? gradients.orange;
-	const writer = config.writer ?? (isColorSupported ? new FancyConsoleWriter(name, color) : new SimpleConsoleWriter(name));
+	const writer =
+		config.writer ??
+		(isColorSupported
+			? new FancyConsoleWriter(name, color)
+			: new SimpleConsoleWriter(name));
 	return new Logger(level, writer);
 }
 

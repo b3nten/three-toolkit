@@ -1,8 +1,7 @@
+import * as Three from "three";
 import { GameObject } from "../game_object";
-import * as Three from 'three';
 
 export class SceneObject extends GameObject<Three.Scene> {
-
 	constructor() {
 		super();
 		this.object3d = new Three.Scene();

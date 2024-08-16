@@ -1,8 +1,7 @@
+import * as Three from "three";
 import { GameObject } from "../game_object";
-import * as Three from "three"
 
 export class PerspectiveCameraObject extends GameObject<Three.PerspectiveCamera> {
-
 	override object3d: Three.PerspectiveCamera;
 
 	#fov: number;
@@ -35,11 +34,13 @@ export class PerspectiveCameraObject extends GameObject<Three.PerspectiveCamera>
 		this.object3d.updateProjectionMatrix();
 	}
 
-	constructor(settings: {
-		fov?: number,
-		near?: number,
-		far?: number,
-	} = {}){
+	constructor(
+		settings: {
+			fov?: number;
+			near?: number;
+			far?: number;
+		} = {},
+	) {
 		super();
 
 		this.#fov = settings.fov ?? 75;
@@ -50,7 +51,7 @@ export class PerspectiveCameraObject extends GameObject<Three.PerspectiveCamera>
 			this.#fov,
 			1,
 			this.#near,
-			this.#far
+			this.#far,
 		);
 
 		this.object3d.userData.owner = this;
@@ -58,14 +59,16 @@ export class PerspectiveCameraObject extends GameObject<Three.PerspectiveCamera>
 
 	override onCreate() {
 		super.onCreate();
-		const renderTarget = this.scene!.game!.renderPipeline.getRenderer().domElement;
+		const renderTarget =
+			this.scene!.game!.renderPipeline.getRenderer().domElement;
 		const aspect = renderTarget.clientWidth / renderTarget.clientHeight;
 		this.object3d.aspect = aspect;
 		this.object3d.updateProjectionMatrix();
 	}
 
 	override onResize(b: DOMRect) {
-		const renderTarget = this.scene!.game!.renderPipeline.getRenderer().domElement;
+		const renderTarget =
+			this.scene!.game!.renderPipeline.getRenderer().domElement;
 		const aspect = renderTarget.clientWidth / renderTarget.clientHeight;
 		this.object3d.aspect = aspect;
 		this.object3d.updateProjectionMatrix();

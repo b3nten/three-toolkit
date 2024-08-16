@@ -1,9 +1,8 @@
-import { GameObject } from "../game_object";
-import * as Three from "three"
+import * as Three from "three";
 import { ASSERT } from "../assert";
+import { GameObject } from "../game_object";
 
 export class OrthographicCameraObject extends GameObject<Three.OrthographicCamera> {
-	
 	#left: number;
 	get left() {
 		return this.#left;
@@ -64,14 +63,16 @@ export class OrthographicCameraObject extends GameObject<Three.OrthographicCamer
 		this.object3d.updateProjectionMatrix();
 	}
 
-	constructor(settings: {
-		left?: number,
-		right?: number,
-		top?: number,
-		bottom?: number,
-		near?: number,
-		far?: number,
-	} = {}){
+	constructor(
+		settings: {
+			left?: number;
+			right?: number;
+			top?: number;
+			bottom?: number;
+			near?: number;
+			far?: number;
+		} = {},
+	) {
 		super();
 
 		this.#left = settings.left ?? -1;
@@ -87,7 +88,7 @@ export class OrthographicCameraObject extends GameObject<Three.OrthographicCamer
 			this.#top,
 			this.#bottom,
 			this.#near,
-			this.#far
+			this.#far,
 		);
 
 		this.object3d.userData.owner = this;
@@ -96,16 +97,25 @@ export class OrthographicCameraObject extends GameObject<Three.OrthographicCamer
 	override onCreate() {
 		super.onCreate();
 
-		ASSERT(this.scene?.game?.renderTarget, "OrthographicCameraObject must be used in a scene with a render target");
+		ASSERT(
+			this.scene?.game?.renderTarget,
+			"OrthographicCameraObject must be used in a scene with a render target",
+		);
 
-		const aspect = this.scene?.game?.renderTarget ? (this.scene.game.renderTarget.clientWidth / this.scene.game.renderTarget.clientHeight) : 1;
+		const aspect = this.scene?.game?.renderTarget
+			? this.scene.game.renderTarget.clientWidth /
+				this.scene.game.renderTarget.clientHeight
+			: 1;
 		this.object3d.left = -aspect;
 		this.object3d.right = aspect;
 		this.object3d.updateProjectionMatrix();
 	}
 
 	override onResize() {
-		const aspect = this.scene?.game?.renderTarget ? (this.scene.game.renderTarget.clientWidth / this.scene.game.renderTarget.clientHeight) : 1;
+		const aspect = this.scene?.game?.renderTarget
+			? this.scene.game.renderTarget.clientWidth /
+				this.scene.game.renderTarget.clientHeight
+			: 1;
 		this.object3d.left = -aspect;
 		this.object3d.right = aspect;
 		this.object3d.updateProjectionMatrix();

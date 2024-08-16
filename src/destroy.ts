@@ -1,4 +1,4 @@
-import * as Three from "three";
+import type * as Three from "three";
 import { isObject3D, isRenderItem } from "./assert";
 
 /****************************************************************************************
@@ -7,24 +7,24 @@ import { isObject3D, isRenderItem } from "./assert";
  *****************************************************************************************/
 
 function disposeObject(obj: Three.Object3D) {
-  if (!obj) return;
+	if (!obj) return;
 
-  if (isRenderItem(obj)) {
-    if (obj.geometry) obj.geometry.dispose();
-    const materials: Three.Material[] = ([] as Three.Material[]).concat(
-      obj.material,
-    );
-    for (const material of materials) {
-      material.dispose();
-    }
-  }
+	if (isRenderItem(obj)) {
+		if (obj.geometry) obj.geometry.dispose();
+		const materials: Three.Material[] = ([] as Three.Material[]).concat(
+			obj.material,
+		);
+		for (const material of materials) {
+			material.dispose();
+		}
+	}
 
-  Promise.resolve().then(() => {
-    obj.parent && obj.parent.remove(obj);
-  });
+	Promise.resolve().then(() => {
+		obj.parent && obj.parent.remove(obj);
+	});
 }
 
 export function destroy(obj: Three.Object3D) {
-  if(!isObject3D(obj)) return;
-  obj.traverse(disposeObject);
+	if (!isObject3D(obj)) return;
+	obj.traverse(disposeObject);
 }

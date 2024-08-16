@@ -1,13 +1,14 @@
-﻿import { GameObject } from "./game_object";
-import { Scene } from "./scene";
+﻿import type { GameObject } from "./game_object";
+import type { Scene } from "./scene";
 
 export class Behavior {
-
-	get isBehavior(){ return true; }
+	get isBehavior() {
+		return true;
+	}
 
 	public id?: string | symbol;
 
-	public tags = new Set<string | symbol>;
+	public tags = new Set<string | symbol>();
 
 	parent: GameObject | null = null;
 
@@ -19,42 +20,42 @@ export class Behavior {
 
 	destroyed = false;
 
-	create(){
-		if(this.initialized) return;
+	create() {
+		if (this.initialized) return;
 		this.onCreate();
 		this.initialized = true;
 	}
 
-	spawn(){
-		if(!this.initialized || this.spawned || this.destroyed) return;
-		this.onSpawn()
+	spawn() {
+		if (!this.initialized || this.spawned || this.destroyed) return;
+		this.onSpawn();
 		this.spawned = true;
 	}
 
-	update(frametime: number, elapsed: number){
-		if(!this.initialized || !this.spawned || this.destroyed) return;
+	update(frametime: number, elapsed: number) {
+		if (!this.initialized || !this.spawned || this.destroyed) return;
 		this.onUpdate(frametime, elapsed);
 	}
 
-	despawn(){
-		if(!this.spawned || this.destroyed) return;
+	despawn() {
+		if (!this.spawned || this.destroyed) return;
 		this.onDespawn();
 	}
 
-	destroy(){
-		if(this.destroyed) return;
+	destroy() {
+		if (this.destroyed) return;
 		this.destructor();
 	}
 
-	resize(bounds: DOMRect){
-		if(!this.initialized || this.destroyed) return;
+	resize(bounds: DOMRect) {
+		if (!this.initialized || this.destroyed) return;
 		this.onResize(bounds);
 	}
 
-	onCreate(): void {};
-	onSpawn(): void {};
-	onUpdate(frametime: number, elapsedtime: number): void {};
-	onDespawn(): void {};
-	onResize(bounds: DOMRect): void {};
-	destructor(): void {};
+	onCreate(): void {}
+	onSpawn(): void {}
+	onUpdate(frametime: number, elapsedtime: number): void {}
+	onDespawn(): void {}
+	onResize(bounds: DOMRect): void {}
+	destructor(): void {}
 }

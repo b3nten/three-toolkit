@@ -1,5 +1,5 @@
+import * as Three from "three";
 import { Behavior } from "../behavior";
-import * as Three from "three"
 
 type FloatArgs = {
 	offset?: number;
@@ -7,8 +7,8 @@ type FloatArgs = {
 	speed?: number;
 	rotationIntensity?: number;
 	floatIntensity?: number;
-	floatingRange?: [number, number]
-}
+	floatingRange?: [number, number];
+};
 
 export class FloatBehavior extends Behavior {
 	#offset: number;
@@ -17,7 +17,7 @@ export class FloatBehavior extends Behavior {
 	speed: number;
 	rotationIntensity: number;
 	floatIntensity: number;
-	floatingRange: [number, number]
+	floatingRange: [number, number];
 
 	constructor(args: FloatArgs = {}) {
 		super();
@@ -31,14 +31,23 @@ export class FloatBehavior extends Behavior {
 
 	onUpdate(frametime: number, elapsedtime: number) {
 		super.onUpdate(frametime, elapsedtime);
-		if (!this.enabled || this.speed === 0 || !this.parent) return
+		if (!this.enabled || this.speed === 0 || !this.parent) return;
 		const t = this.#offset + elapsedtime;
-		this.parent.rotation.x = (Math.cos((t / 4) * this.speed * 2) / 8) * this.rotationIntensity
-		this.parent.rotation.y = (Math.sin((t / 4) * this.speed * 2) / 8) * this.rotationIntensity
-		this.parent.rotation.z = (Math.sin((t / 4) * this.speed * 2) / 20) * this.rotationIntensity
-		let yPosition = Math.sin((t / 4) * this.speed * 2) / 10
-		yPosition = Three.MathUtils.mapLinear(yPosition, -0.1, 0.1, this.floatingRange?.[0] ?? -0.1, this.floatingRange?.[1] ?? 0.1)
-		this.parent.position.y = yPosition * this.floatIntensity
-		this.parent.object3d.updateMatrix()
+		this.parent.rotation.x =
+			(Math.cos((t / 4) * this.speed * 2) / 8) * this.rotationIntensity;
+		this.parent.rotation.y =
+			(Math.sin((t / 4) * this.speed * 2) / 8) * this.rotationIntensity;
+		this.parent.rotation.z =
+			(Math.sin((t / 4) * this.speed * 2) / 20) * this.rotationIntensity;
+		let yPosition = Math.sin((t / 4) * this.speed * 2) / 10;
+		yPosition = Three.MathUtils.mapLinear(
+			yPosition,
+			-0.1,
+			0.1,
+			this.floatingRange?.[0] ?? -0.1,
+			this.floatingRange?.[1] ?? 0.1,
+		);
+		this.parent.position.y = yPosition * this.floatIntensity;
+		this.parent.object3d.updateMatrix();
 	}
 }

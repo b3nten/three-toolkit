@@ -1,5 +1,3 @@
 import { GameObject } from "../game_object";
 
-export class FPSControllerObject extends GameObject {
-
-}
+export class FPSControllerObject extends GameObject {}

@@ -1,38 +1,53 @@
-﻿import { Scene } from "./scene";
-import * as Three from "three";
-import { Behavior } from "./behavior";
-import { destroy } from "./destroy";
+﻿import * as Three from "three";
 import { isBehavior, isGameObject } from "./assert";
+import type { Behavior } from "./behavior";
+import { destroy } from "./destroy";
+import type { Scene } from "./scene";
 
 export class GameObject<T extends Three.Object3D = Three.Object3D> {
-
-	get isGameObject(){ return true; }
+	get isGameObject() {
+		return true;
+	}
 
 	public id?: string | symbol;
 
-	public tags = new Set<string | symbol>;
+	public tags = new Set<string | symbol>();
 
-	public object3d = new Three.Object3D;
+	public object3d = new Three.Object3D();
 
 	public scene: Scene | null = null;
 
 	public parent: GameObject | null = null;
 
-	get position() { return this.object3d.position; }
+	get position() {
+		return this.object3d.position;
+	}
 
-	get rotation() { return this.object3d.rotation; }
+	get rotation() {
+		return this.object3d.rotation;
+	}
 
-	get scale() { return this.object3d.scale; }
+	get scale() {
+		return this.object3d.scale;
+	}
 
-	get quaternion() { return this.object3d.quaternion; }
+	get quaternion() {
+		return this.object3d.quaternion;
+	}
 
-	get matrix() { return this.object3d.matrix; }
+	get matrix() {
+		return this.object3d.matrix;
+	}
 
-	get visible() { return this.object3d.visible; }
+	get visible() {
+		return this.object3d.visible;
+	}
 
-	set visible(value: boolean) { this.object3d.visible = value; }
+	set visible(value: boolean) {
+		this.object3d.visible = value;
+	}
 
-	public readonly children: Set<GameObject | Behavior> = new Set;
+	public readonly children: Set<GameObject | Behavior> = new Set();
 
 	public initialized = false;
 
@@ -45,55 +60,54 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 	}
 
 	addChild<T extends GameObject | Behavior>(child: T): this {
-		if(this.destroyed) return this;
+		if (this.destroyed) return this;
 
-		if(isGameObject(child.parent)){
-			child.parent.removeChild(child)
+		if (isGameObject(child.parent)) {
+			child.parent.removeChild(child);
 		}
 
-		this.children.add(child)
-
+		this.children.add(child);
 
 		child.parent = this;
 		child.scene = this.scene;
 
-		if(isGameObject(child)){
-			this.object3d.add(child.object3d)
+		if (isGameObject(child)) {
+			this.object3d.add(child.object3d);
 
-			if(child.id){
-				this.scene?.gameObjectsById.set(child.id, child)
+			if (child.id) {
+				this.scene?.gameObjectsById.set(child.id, child);
 			}
-			
-			if(child.tags){
-				for(const tag of child.tags){
-					if(!this.scene?.gameObjectsByTag.has(tag)){
-						this.scene?.gameObjectsByTag.set(tag, new Set)
+
+			if (child.tags) {
+				for (const tag of child.tags) {
+					if (!this.scene?.gameObjectsByTag.has(tag)) {
+						this.scene?.gameObjectsByTag.set(tag, new Set());
 					}
-					this.scene?.gameObjectsByTag.get(tag)?.add(child)
+					this.scene?.gameObjectsByTag.get(tag)?.add(child);
 				}
 			}
 		}
 
-		if(isBehavior(child)){
-			if(child.id){
-				this.scene?.behaviorsById.set(child.id, child)
+		if (isBehavior(child)) {
+			if (child.id) {
+				this.scene?.behaviorsById.set(child.id, child);
 			}
 
-			if(child.tags){
-				for(const tag of child.tags){
-					if(!this.scene?.behaviorsByTag.has(tag)){
-						this.scene?.behaviorsByTag.set(tag, new Set)
+			if (child.tags) {
+				for (const tag of child.tags) {
+					if (!this.scene?.behaviorsByTag.has(tag)) {
+						this.scene?.behaviorsByTag.set(tag, new Set());
 					}
-					this.scene?.behaviorsByTag.get(tag)?.add(child)
+					this.scene?.behaviorsByTag.get(tag)?.add(child);
 				}
 			}
 		}
 
-		if(this.initialized){
+		if (this.initialized) {
 			child.create();
 		}
 
-		if(this.spawned){
+		if (this.spawned) {
 			child.spawn();
 		}
 
@@ -101,22 +115,22 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 	}
 
 	removeChild<T extends GameObject | Behavior>(child: T): T {
-		if(this.destroyed) return child;
+		if (this.destroyed) return child;
 
 		child.parent = null;
 
-		this.children.delete(child)
+		this.children.delete(child);
 
-		if(isGameObject(child)){
-			this.object3d.remove(child.object3d)
+		if (isGameObject(child)) {
+			this.object3d.remove(child.object3d);
 
-			if(child.id){
-				this.scene?.gameObjectsById.delete(child.id)
+			if (child.id) {
+				this.scene?.gameObjectsById.delete(child.id);
 			}
 
-			if(child.tags){
-				for(const tag of child.tags){
-					this.scene?.gameObjectsByTag.get(tag)?.delete(child)
+			if (child.tags) {
+				for (const tag of child.tags) {
+					this.scene?.gameObjectsByTag.get(tag)?.delete(child);
 				}
 			}
 		}
@@ -126,21 +140,21 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 	addTag(tag: string | symbol): this {
 		this.tags.add(tag);
-		if(!this.scene?.gameObjectsByTag.has(tag)){
-			this.scene?.gameObjectsByTag.set(tag, new Set)
+		if (!this.scene?.gameObjectsByTag.has(tag)) {
+			this.scene?.gameObjectsByTag.set(tag, new Set());
 		}
-		this.scene?.gameObjectsByTag.get(tag)!.add(this)
+		this.scene?.gameObjectsByTag.get(tag)!.add(this);
 		return this;
 	}
 
 	removeTag(tag: string | symbol): this {
 		this.tags.delete(tag);
-		this.scene?.gameObjectsByTag.get(tag)?.delete(this)
+		this.scene?.gameObjectsByTag.get(tag)?.delete(this);
 		return this;
 	}
 
-	create(){
-		if(this.initialized || this.destroyed) return;
+	create() {
+		if (this.initialized || this.destroyed) return;
 
 		this.object3d.userData.owner = this;
 
@@ -148,77 +162,77 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 		this.initialized = true;
 
-		for(const child of this.children){
+		for (const child of this.children) {
 			child.scene = this.scene;
 			child.create();
 		}
 	}
 
-	spawn(){
-		if(this.spawned || this.destroyed) return;
-		this.onSpawn()
+	spawn() {
+		if (this.spawned || this.destroyed) return;
+		this.onSpawn();
 		this.spawned = true;
-		this.parent?.object3d.add(this.object3d)
-		for(const child of this.children){
-			child.spawn()
+		this.parent?.object3d.add(this.object3d);
+		for (const child of this.children) {
+			child.spawn();
 		}
 	}
 
-	update(frametime: number, elapsedtime: number){
-		if(!this.spawned || this.destroyed) return;
-		this.onUpdate(frametime, elapsedtime)
-		for(const child of this.children){
-			child.update(frametime, elapsedtime)
+	update(frametime: number, elapsedtime: number) {
+		if (!this.spawned || this.destroyed) return;
+		this.onUpdate(frametime, elapsedtime);
+		for (const child of this.children) {
+			child.update(frametime, elapsedtime);
 		}
 	}
 
-	despawn(){
-		if(!this.spawned || this.destroyed) return;
+	despawn() {
+		if (!this.spawned || this.destroyed) return;
 		this.onDespawn();
-		this.parent?.object3d.remove(this.object3d)
-		for(const child of this.children){
-			child.despawn()
+		this.parent?.object3d.remove(this.object3d);
+		for (const child of this.children) {
+			child.despawn();
 		}
 	}
 
-	destroy(){
-		if(this.destroyed) return;
-		this.destructor()
+	destroy() {
+		if (this.destroyed) return;
+		this.destructor();
 		this.destroyed = true;
-		destroy(this.object3d)
-		for(const child of this.children){
-			child.despawn()
+		destroy(this.object3d);
+		for (const child of this.children) {
+			child.despawn();
 		}
 	}
 
 	resize(bounds: DOMRect) {
-		if(!this.initialized || this.destroyed) return;
-		this.onResize(bounds)
-		for(const child of this.children){
-			child.resize(bounds)
+		if (!this.initialized || this.destroyed) return;
+		this.onResize(bounds);
+		for (const child of this.children) {
+			child.resize(bounds);
 		}
 	}
 
-	onCreate(): void {};
-	onSpawn(): void {};
-	onUpdate(frametime: number, elapsedtime: number): void {};
-	onDespawn(): void {};
-	onResize(bounds: DOMRect): void {};
-	destructor(): void {};
+	onCreate(): void {}
+	onSpawn(): void {}
+	onUpdate(frametime: number, elapsedtime: number): void {}
+	onDespawn(): void {}
+	onResize(bounds: DOMRect): void {}
+	destructor(): void {}
 
 	getChildrenByTag(tag: string | symbol): (GameObject | Behavior)[] {
 		const children: (GameObject | Behavior)[] = [];
-		for(const child of this.children){
-			if(child.tags.has(tag)){
-				children.push(child)
+		for (const child of this.children) {
+			if (child.tags.has(tag)) {
+				children.push(child);
 			}
 		}
-		return children
+		return children;
 	}
 
 	getChildById(id: string | symbol): GameObject | Behavior | null {
-		for(const child of this.children){
-			if(child.id === id){
+		for (const child of this.children) {
+			if (child.id === id) {
 				return child;
 			}
 		}
@@ -226,8 +240,8 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 	}
 
 	getBehaviorsByType<T extends string | symbol>(type: new () => T): T | null {
-		for(const child of this.children){
-			if(isBehavior(child) && child instanceof type){
+		for (const child of this.children) {
+			if (isBehavior(child) && child instanceof type) {
 				return child;
 			}
 		}
@@ -236,9 +250,8 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 	getBehaviorsByTag(tag: string | symbol): Behavior[] {
 		const behaviors: Behavior[] = [];
-		for(const child of this
-			.children){
-			if(isBehavior(child) && child.tags.has(tag)){
+		for (const child of this.children) {
+			if (isBehavior(child) && child.tags.has(tag)) {
 				behaviors.push(child);
 			}
 		}
@@ -246,8 +259,8 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 	}
 
 	getBehaviorById(id: string): Behavior | null {
-		for(const child of this.children){
-			if(isBehavior(child) && child.id === id){
+		for (const child of this.children) {
+			if (isBehavior(child) && child.id === id) {
 				return child;
 			}
 		}
@@ -255,17 +268,17 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 	}
 
 	getGameObjectByType<T extends GameObject>(type: new () => T): T | null {
-		for(const child of this.children){
-			if(isGameObject(child) && child instanceof type){
+		for (const child of this.children) {
+			if (isGameObject(child) && child instanceof type) {
 				return child;
 			}
 		}
-		return null
+		return null;
 	}
 
 	getGameObjectById(id: string): GameObject | null {
-		for(const child of this.children){
-			if(isGameObject(child) && child.id === id){
+		for (const child of this.children) {
+			if (isGameObject(child) && child.id === id) {
 				return child;
 			}
 		}
@@ -274,9 +287,8 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 	getGameObjectsByTag(tag: string): GameObject[] {
 		const gameObjects: GameObject[] = [];
-		for(const child of this
-			.children){
-			if(isGameObject(child) && child.tags.has(tag)){
+		for (const child of this.children) {
+			if (isGameObject(child) && child.tags.has(tag)) {
 				gameObjects.push(child);
 			}
 		}
@@ -284,7 +296,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 	}
 
 	*childs(): IterableIterator<GameObject | Behavior> {
-		for(const child of this.children){
+		for (const child of this.children) {
 			yield child;
 		}
 	}
