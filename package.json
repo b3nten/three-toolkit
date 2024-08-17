@@ -1,6 +1,6 @@
 {
   "name": "elysiatech",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "type": "module",
   "files": [
 	"dist"
@@ -17,8 +17,8 @@
 	  "types": "./dist/mod.d.ts"
 	},
 	"./actors/*": {
-	  "import": "./dist/game_objects/*.js",
-	  "types": "./dist/game_objects/*.d.ts"
+	  "import": "./dist/actors/*.js",
+	  "types": "./dist/actors/*.d.ts"
 	},
 	"./behaviors/*": {
 	  "import": "./dist/behaviors/*.js",
