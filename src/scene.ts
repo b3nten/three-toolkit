@@ -1,18 +1,16 @@
 import * as Three from "three";
-import { SoundManager } from "./audio";
+import type { Actor } from "./actor";
+import { SceneActor } from "./actors/SceneActor";
 import type { Behavior } from "./behavior";
 import type { Game } from "./game";
-import type { GameObject } from "./game_object";
-import { SceneObject } from "./game_objects/SceneObject";
-import { InputQueue } from "./input";
-import { ActiveCamera } from "./mod";
+import { ActiveCameraTag } from "./tags";
 
 class PointerController {
 	#raycaster = new Three.Raycaster();
 
-	intersections = new Set<GameObject>();
+	intersections = new Set<Actor>();
 
-	cast(pointer: Three.Vector2, camera: Three.Camera, scene: SceneObject) {
+	cast(pointer: Three.Vector2, camera: Three.Camera, scene: SceneActor) {
 		this.#raycaster.setFromCamera(pointer, camera);
 		for (const i of this.#raycaster.intersectObjects(scene.object3d.children)) {
 			if (i.object.userData.owner)
@@ -24,15 +22,15 @@ class PointerController {
 export abstract class Scene {
 	game?: Game;
 
-	root: SceneObject;
+	root: SceneActor;
 
 	behaviorsById = new Map<string | symbol, Behavior>();
 
 	behaviorsByTag = new Map<string | symbol, Set<Behavior>>();
 
-	gameObjectsById = new Map<string | symbol, GameObject>();
+	gameObjectsById = new Map<string | symbol, Actor>();
 
-	gameObjectsByTag = new Map<string | symbol, Set<GameObject>>();
+	gameObjectsByTag = new Map<string | symbol, Set<Actor>>();
 
 	get sound() {
 		return this.game!.sound;
@@ -75,7 +73,7 @@ export abstract class Scene {
 	}
 
 	constructor() {
-		this.root = new SceneObject();
+		this.root = new SceneActor();
 		this.root.scene = this;
 	}
 
@@ -88,7 +86,9 @@ export abstract class Scene {
 	}
 
 	update(frametime: number, elapsedtime: number) {
-		const camera = this.getGameObjectsByTag(ActiveCamera).values().next().value;
+		const camera = this.getGameObjectsByTag(ActiveCameraTag)
+			.values()
+			.next().value;
 
 		this.#pointerController.intersections.clear();
 
@@ -132,27 +132,27 @@ export abstract class Scene {
 		return this.behaviorsByTag.get(tag)!;
 	}
 
-	getGameObjectById(id: string | symbol): GameObject | undefined {
+	getGameObjectById(id: string | symbol): Actor | undefined {
 		return this.gameObjectsById.get(id);
 	}
 
-	getGameObjectsByTag(tag: string | symbol): Set<GameObject> {
+	getGameObjectsByTag(tag: string | symbol): Set<Actor> {
 		if (!this.gameObjectsByTag.get(tag)) {
 			this.gameObjectsByTag.set(tag, new Set());
 		}
 		return this.gameObjectsByTag.get(tag)!;
 	}
 
-	getActiveCamera(): GameObject<Three.Camera> | undefined {
-		return this.getGameObjectsByTag(ActiveCamera).values().next().value;
+	getActiveCamera(): Actor<Three.Camera> | undefined {
+		return this.getGameObjectsByTag(ActiveCameraTag).values().next().value;
 	}
 
-	setActiveCamera(gameObject: GameObject): void {
+	setActiveCamera(gameObject: Actor): void {
 		const current = this.getActiveCamera();
 		if (current) {
-			current.removeTag(ActiveCamera);
+			current.removeTag(ActiveCameraTag);
 		}
-		gameObject.addTag(ActiveCamera);
+		gameObject.addTag(ActiveCameraTag);
 	}
 
 	#pointerController = new PointerController();

@@ -1,11 +1,11 @@
 ﻿import * as Three from "three";
-import { isBehavior, isGameObject } from "./assert";
+import { isActor, isBehavior } from "./asserts";
 import type { Behavior } from "./behavior";
 import { destroy } from "./destroy";
 import type { Scene } from "./scene";
 
-export class GameObject<T extends Three.Object3D = Three.Object3D> {
-	get isGameObject() {
+export class Actor<T extends Three.Object3D = Three.Object3D> {
+	get isActor() {
 		return true;
 	}
 
@@ -13,11 +13,11 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 
 	public tags = new Set<string | symbol>();
 
-	public object3d = new Three.Object3D();
+	public object3d: T;
 
 	public scene: Scene | null = null;
 
-	public parent: GameObject | null = null;
+	public parent: Actor | null = null;
 
 	get position() {
 		return this.object3d.position;
@@ -47,7 +47,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 		this.object3d.visible = value;
 	}
 
-	public readonly children: Set<GameObject | Behavior> = new Set();
+	public readonly children: Set<Actor | Behavior> = new Set();
 
 	public initialized = false;
 
@@ -56,13 +56,14 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 	public destroyed = false;
 
 	constructor() {
+		this.object3d = new Three.Object3D() as T;
 		this.object3d.userData.owner = this;
 	}
 
-	addChild<T extends GameObject | Behavior>(child: T): this {
+	addChild<T extends Actor | Behavior>(child: T): this {
 		if (this.destroyed) return this;
 
-		if (isGameObject(child.parent)) {
+		if (isActor(child.parent)) {
 			child.parent.removeChild(child);
 		}
 
@@ -71,7 +72,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 		child.parent = this;
 		child.scene = this.scene;
 
-		if (isGameObject(child)) {
+		if (isActor(child)) {
 			this.object3d.add(child.object3d);
 
 			if (child.id) {
@@ -114,14 +115,14 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 		return this;
 	}
 
-	removeChild<T extends GameObject | Behavior>(child: T): T {
+	removeChild<T extends Actor | Behavior>(child: T): T {
 		if (this.destroyed) return child;
 
 		child.parent = null;
 
 		this.children.delete(child);
 
-		if (isGameObject(child)) {
+		if (isActor(child)) {
 			this.object3d.remove(child.object3d);
 
 			if (child.id) {
@@ -220,8 +221,8 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 	onResize(bounds: DOMRect): void {}
 	destructor(): void {}
 
-	getChildrenByTag(tag: string | symbol): (GameObject | Behavior)[] {
-		const children: (GameObject | Behavior)[] = [];
+	getChildrenByTag(tag: string | symbol): (Actor | Behavior)[] {
+		const children: (Actor | Behavior)[] = [];
 		for (const child of this.children) {
 			if (child.tags.has(tag)) {
 				children.push(child);
@@ -230,7 +231,7 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 		return children;
 	}
 
-	getChildById(id: string | symbol): GameObject | Behavior | null {
+	getChildById(id: string | symbol): Actor | Behavior | null {
 		for (const child of this.children) {
 			if (child.id === id) {
 				return child;
@@ -267,35 +268,35 @@ export class GameObject<T extends Three.Object3D = Three.Object3D> {
 		return null;
 	}
 
-	getGameObjectByType<T extends GameObject>(type: new () => T): T | null {
+	getGameObjectByType<T extends Actor>(type: new () => T): T | null {
 		for (const child of this.children) {
-			if (isGameObject(child) && child instanceof type) {
+			if (isActor(child) && child instanceof type) {
 				return child;
 			}
 		}
 		return null;
 	}
 
-	getGameObjectById(id: string): GameObject | null {
+	getGameObjectById(id: string): Actor | null {
 		for (const child of this.children) {
-			if (isGameObject(child) && child.id === id) {
+			if (isActor(child) && child.id === id) {
 				return child;
 			}
 		}
 		return null;
 	}
 
-	getGameObjectsByTag(tag: string): GameObject[] {
-		const gameObjects: GameObject[] = [];
+	getGameObjectsByTag(tag: string): Actor[] {
+		const gameObjects: Actor[] = [];
 		for (const child of this.children) {
-			if (isGameObject(child) && child.tags.has(tag)) {
+			if (isActor(child) && child.tags.has(tag)) {
 				gameObjects.push(child);
 			}
 		}
 		return gameObjects;
 	}
 
-	*childs(): IterableIterator<GameObject | Behavior> {
+	*childs(): IterableIterator<Actor | Behavior> {
 		for (const child of this.children) {
 			yield child;
 		}

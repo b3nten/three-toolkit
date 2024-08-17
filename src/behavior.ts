@@ -1,4 +1,4 @@
-﻿import type { GameObject } from "./game_object";
+﻿import type { Actor } from "./actor";
 import type { Scene } from "./scene";
 
 export class Behavior {
@@ -10,7 +10,7 @@ export class Behavior {
 
 	public tags = new Set<string | symbol>();
 
-	parent: GameObject | null = null;
+	parent: Actor | null = null;
 
 	scene: Scene | null = null;
 

@@ -1,9 +1,9 @@
 import * as Three from "three";
-import { GameObject } from "../game_object";
+import { Actor } from "../actor";
 
-export class MeshObject<
+export class MeshActor<
 	T extends Three.Mesh = Three.Mesh,
-> extends GameObject<Three.Mesh> {
+> extends Actor<Three.Mesh> {
 	override object3d = new Three.Mesh();
 
 	#geometry: Three.BufferGeometry;

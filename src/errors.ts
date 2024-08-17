@@ -59,16 +59,16 @@ export function result<T>(
 			// @ts-ignore
 			return new Promise((res) => {
 				value
-					// @ts-ignore
 					.then((value) =>
+						// @ts-ignore
 						res({ success: true, value, error: undefined, RESULT_BRAND: true }),
 					)
-					// @ts-ignore
 					.catch((err) =>
 						res({
 							success: false,
 							error: toError(err),
 							value: undefined,
+							// @ts-ignore
 							RESULT_BRAND: true,
 						}),
 					);

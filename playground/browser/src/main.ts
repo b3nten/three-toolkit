@@ -1,16 +1,14 @@
 import "./styles.css";
 import * as Effects from "postprocessing";
-import * as Three from "three";
-import * as Engine from "../../src/mod.ts";
+import { HighDefinitionRenderPipeline } from "../../../src/render_pipelines/HighDefinitionRenderPipeline.ts";
+import { Game, Scene, ActiveCameraTag } from "../../../src/mod.ts";
+import { EnvironmentActor } from "../../../src/actors/EnvironmentActor.ts";
+import { PerspectiveCameraActor } from "../../../src/actors/PerspectiveCameraActor.ts";
+import { CameraOrbitBehavior } from "../../../src/behaviors/CameraOrbitBehavior.ts";
+import { PrimitiveCubeActor } from "../../../src/actors/Primitives.ts";
+import { FloatBehavior } from "../../../src/behaviors/FloatBehavior.ts";
 
-const basicRP = new Engine.BasicRenderPipeline({
-	canvas: document.getElementById("game") as HTMLCanvasElement,
-	toneMapping: Three.ACESFilmicToneMapping,
-	toneMappingExposure: 1,
-	devicePixelRatio: window.devicePixelRatio,
-});
-
-const hdRP = new Engine.HighDefinitionRenderPipeline({
+const hdRP = new HighDefinitionRenderPipeline({
 	canvas: document.getElementById("game") as HTMLCanvasElement,
 	effects: () => [
 		new Effects.RenderPass(),
@@ -28,41 +26,36 @@ const hdRP = new Engine.HighDefinitionRenderPipeline({
 			}),
 		),
 	],
-	devicePixelRatio: window.devicePixelRatio,
 });
 
-const game = new Engine.Game({ renderPipeline: hdRP });
+const game = new Game({ renderPipeline: hdRP });
 
-class TestScene extends Engine.Scene {
-	environment = new Engine.EnvironmentObject({
+class TestScene extends Scene {
+	environment = new EnvironmentActor({
 		background: true,
 		backgroundBlur: 2,
 	});
 
-	camera = new Engine.PerspectiveCameraObject();
+	camera = new PerspectiveCameraActor();
 
 	override async setup() {
 		await super.setup();
 
 		this.camera
-			.addChild(new Engine.CameraOrbitBehavior())
-			.addTag(Engine.ActiveCamera).position.z = 5;
+			.addChild(new CameraOrbitBehavior())
+			.addTag(ActiveCameraTag).position.z = 5;
 
 		this.root.addChild(this.camera);
 
 		this.root.addChild(this.environment);
 
 		this.root.addChild(
-			new Engine.PrimitiveCubeObject().addChild(new Engine.FloatBehavior()),
+			new PrimitiveCubeActor().addChild(new FloatBehavior()),
 		);
 	}
 }
 
-async function main() {
-	console.log("Loading scene");
-	await game.loadScene(new TestScene());
-	console.log("Playing scene");
-	game.play();
-}
-
-main();
+console.log("Loading scene");
+await game.loadScene(new TestScene());
+console.log("Playing scene");
+game.play();

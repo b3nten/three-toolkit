@@ -1,6 +1,5 @@
 import type * as Three from "three";
 import type { Game } from "./game";
-import { ActiveCamera } from "./mod";
 import type { Scene } from "./scene";
 
 export abstract class RenderPipeline {

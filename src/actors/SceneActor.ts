@@ -1,7 +1,7 @@
 import * as Three from "three";
-import { GameObject } from "../game_object";
+import { Actor } from "../actor";
 
-export class SceneObject extends GameObject<Three.Scene> {
+export class SceneActor extends Actor<Three.Scene> {
 	constructor() {
 		super();
 		this.object3d = new Three.Scene();

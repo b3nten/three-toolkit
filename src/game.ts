@@ -1,5 +1,5 @@
 ﻿import * as Three from "three";
-import { ASSERT } from "./assert";
+import { ASSERT } from "./asserts";
 import { SoundManager } from "./audio";
 import { InputQueue } from "./input";
 import type { RenderPipeline } from "./render_pipeline";

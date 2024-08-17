@@ -1,6 +1,3 @@
-import type { Behavior } from "./behavior";
-import type { GameObject } from "./game_object";
-
 import type {
 	Camera,
 	DirectionalLight,
@@ -14,7 +11,6 @@ import type {
 	PerspectiveCamera,
 	PointLight,
 	Quaternion,
-	RectAreaLight,
 	RenderItem,
 	Scene,
 	SkinnedMesh,
@@ -23,6 +19,8 @@ import type {
 	Vector2,
 	Vector3,
 } from "three";
+import type { Actor } from "./actor";
+import type { Behavior } from "./behavior";
 
 export class AssertionError extends Error {
 	constructor(message: string) {
@@ -76,10 +74,8 @@ export function DEBUG_ASSERT(
 			throw new DebugAssertionError(message);
 		} else if (typeof message === "function") {
 			message();
-		} else if (message instanceof Error) {
-			throw message;
 		} else {
-			throw new DebugAssertionError("Assertion failed");
+			throw message;
 		}
 	}
 }
@@ -152,12 +148,26 @@ export function isObject(value: any): value is Object {
 	return typeof value === "object" && value !== null;
 }
 
-export function hasKeys(value: any, keys: Array<string | number | symbol>) {
+export function hasKeys<K extends string | number | symbol>(
+	value: any,
+	...keys: Array<K>
+): value is { readonly [Key in K]: unknown } {
 	return isObject(value) && keys.every((key) => key in value);
 }
 
 export function isArray(value: any): value is Array<any> {
 	return Array.isArray(value);
+}
+
+export function arrayContains<T>(
+	value: any,
+	type: (value: any) => value is T,
+): value is Array<T> {
+	if (!isArray(value)) return false;
+	for (const item of value) {
+		if (!type(item)) return false;
+	}
+	return true;
 }
 
 export function isDate(value: any): value is Date {
@@ -172,7 +182,7 @@ export function isRegExp(value: any): value is RegExp {
 	return value instanceof RegExp;
 }
 
-export function isPromise(value: any): value is Promise {
+export function isPromise(value: any): value is Promise<unknown> {
 	return value instanceof Promise;
 }
 
@@ -230,8 +240,8 @@ export function isDev() {
 
 // engine
 
-export function isGameObject(obj: any): obj is GameObject {
-	return "isGameObject" in obj;
+export function isActor(obj: any): obj is Actor {
+	return "isActor" in obj;
 }
 
 export function isBehavior(obj: any): obj is Behavior {
@@ -264,16 +274,40 @@ export function isOrthographicCamera(obj: any): obj is OrthographicCamera {
 	return "isOrthographicCamera" in obj;
 }
 
+export function isVector2Like(
+	obj: any,
+): obj is Vector2 | { x: number; y: number } {
+	return "x" in obj && "y" in obj;
+}
+
 export function isVector2(obj: any): obj is Vector2 {
 	return "isVector2" in obj;
+}
+
+export function isVector3Like(
+	obj: any,
+): obj is Vector3 | { x: number; y: number; z: number } {
+	return "x" in obj && "y" in obj && "z" in obj;
 }
 
 export function isVector3(obj: any): obj is Vector3 {
 	return "isVector3" in obj;
 }
 
+export function isQuaternionLike(
+	obj: any,
+): obj is Quaternion | { x: number; y: number; z: number; w: number } {
+	return "x" in obj && "y" in obj && "z" in obj && "w" in obj;
+}
+
 export function isQuaternion(obj: any): obj is Quaternion {
 	return "isQuaternion" in obj;
+}
+
+export function isEulerLike(
+	obj: any,
+): obj is Euler | { x: number; y: number; z: number } {
+	return "x" in obj && "y" in obj && "z" in obj;
 }
 
 export function isEuler(obj: any): obj is Euler {

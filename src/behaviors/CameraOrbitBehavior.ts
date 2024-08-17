@@ -1,7 +1,6 @@
 import { OrbitControls } from "three-stdlib";
-import { ASSERT } from "../asserts";
+import { PerspectiveCameraActor } from "../actors/PerspectiveCameraActor";
 import { Behavior } from "../behavior";
-import { PerspectiveCameraObject } from "../game_objects/PerspectiveCamera";
 
 export class CameraOrbitBehavior extends Behavior {
 	controls: OrbitControls | null = null;
@@ -9,11 +8,9 @@ export class CameraOrbitBehavior extends Behavior {
 	onCreate() {
 		super.onCreate();
 
-		if (!(this.parent instanceof PerspectiveCameraObject)) return;
+		if (!(this.parent instanceof PerspectiveCameraActor)) return;
 
 		const renderer = this.scene!.game!.renderPipeline.getRenderer();
-
-		ASSERT(renderer, "Renderer must be defined");
 
 		this.controls = new OrbitControls(
 			this.parent.object3d,

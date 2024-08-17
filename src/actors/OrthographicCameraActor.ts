@@ -1,8 +1,9 @@
 import * as Three from "three";
-import { ASSERT } from "../assert";
-import { GameObject } from "../game_object";
+import { Actor } from "../actor";
 
-export class OrthographicCameraObject extends GameObject<Three.OrthographicCamera> {
+export class OrthographicCameraActor extends Actor<Three.OrthographicCamera> {
+	override object3d: Three.OrthographicCamera;
+
 	#left: number;
 	get left() {
 		return this.#left;
@@ -97,27 +98,28 @@ export class OrthographicCameraObject extends GameObject<Three.OrthographicCamer
 	override onCreate() {
 		super.onCreate();
 
-		ASSERT(
-			this.scene?.game?.renderTarget,
-			"OrthographicCameraObject must be used in a scene with a render target",
-		);
+		const renderTarget =
+			this.scene!.game!.renderPipeline.getRenderer().domElement;
+		const aspect = renderTarget.clientWidth / renderTarget.clientHeight;
 
-		const aspect = this.scene?.game?.renderTarget
-			? this.scene.game.renderTarget.clientWidth /
-				this.scene.game.renderTarget.clientHeight
-			: 1;
-		this.object3d.left = -aspect;
-		this.object3d.right = aspect;
+		this.object3d.left = this.#left * aspect;
+		this.object3d.right = this.#right * aspect;
+		this.object3d.top = this.#top;
+		this.object3d.bottom = this.#bottom;
+
 		this.object3d.updateProjectionMatrix();
 	}
 
-	override onResize() {
-		const aspect = this.scene?.game?.renderTarget
-			? this.scene.game.renderTarget.clientWidth /
-				this.scene.game.renderTarget.clientHeight
-			: 1;
-		this.object3d.left = -aspect;
-		this.object3d.right = aspect;
+	override onResize(b: DOMRect) {
+		const renderTarget =
+			this.scene!.game!.renderPipeline.getRenderer().domElement;
+		const aspect = renderTarget.clientWidth / renderTarget.clientHeight;
+
+		this.object3d.left = this.#left * aspect;
+		this.object3d.right = this.#right * aspect;
+		this.object3d.top = this.#top;
+		this.object3d.bottom = this.#bottom;
+
 		this.object3d.updateProjectionMatrix();
 	}
 }

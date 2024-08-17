@@ -1,5 +1,5 @@
 import * as Three from "three";
-import { Behavior } from "../mod";
+import { Actor } from "../mod";
 
 function createDefaultEnvironment() {
 	const scene = new Three.Scene();
@@ -122,8 +122,9 @@ type EnvironmentArgs = {
 	backgroundBlur?: number;
 };
 
-export class EnvironmentObject extends Behavior {
+export class EnvironmentActor extends Actor {
 	#texture: Three.Texture | Three.CubeTexture | null;
+
 	get texture() {
 		return this.#texture;
 	}

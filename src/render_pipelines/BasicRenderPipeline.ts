@@ -40,6 +40,7 @@ export class BasicRenderPipeline extends RenderPipeline {
 
 	render() {
 		const camera = this.scene!.getActiveCamera()!;
+
 		this.renderer.render(this.scene!.root.object3d, camera.object3d);
 	}
 

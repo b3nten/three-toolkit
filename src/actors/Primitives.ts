@@ -1,5 +1,5 @@
 import * as Three from "three";
-import { GameObject } from "../game_object";
+import { Actor } from "../actor";
 
 const PRIMITIVE_COLOR = "#c4c4c4";
 
@@ -20,7 +20,9 @@ type PrimitiveArgs = {
 	scale?: Three.Vector3;
 };
 
-export class PrimitiveCubeObject extends GameObject<Three.Mesh> {
+export class PrimitiveCubeActor extends Actor<Three.Mesh> {
+	override object3d: Three.Mesh;
+
 	#material: PrimitiveMeshMaterial;
 
 	get material() {

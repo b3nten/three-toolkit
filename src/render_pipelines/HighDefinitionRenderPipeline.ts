@@ -37,7 +37,9 @@ export class HighDefinitionRenderPipeline extends RenderPipeline {
 
 		this.effects = args.effects;
 
-		args.devicePixelRatio && this.renderer.setPixelRatio(args.devicePixelRatio);
+		this.renderer.setPixelRatio(
+			args.devicePixelRatio ?? window.devicePixelRatio,
+		);
 	}
 
 	getRenderer(): Three.WebGLRenderer {

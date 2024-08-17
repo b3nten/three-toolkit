@@ -1,12 +1,8 @@
+import { ASSERT } from "./asserts";
+
 /***********************************************************
     Utilities
 ************************************************************/
-
-function assert<T>(value: T, message: string): asserts value {
-	if (!value) {
-		throw new Error(message);
-	}
-}
 
 const isBrowser = ![typeof window, typeof document].includes("undefined");
 
@@ -40,21 +36,21 @@ export class SoundManager {
 		if (isServer) return;
 
 		if (value) {
-			window.addEventListener("blur", this.MuteAll);
-			window.addEventListener("focus", this.UnmuteAll);
+			window.addEventListener("blur", this.muteAll);
+			window.addEventListener("focus", this.unmuteAll);
 		} else {
-			window.removeEventListener("blur", this.MuteAll);
-			window.removeEventListener("focus", this.UnmuteAll);
+			window.removeEventListener("blur", this.muteAll);
+			window.removeEventListener("focus", this.unmuteAll);
 		}
 	}
 
-	Create(input: string | ArrayBuffer, args: { loop?: boolean; nodes?: any[] }) {
+	create(input: string | ArrayBuffer, args: { loop?: boolean; nodes?: any[] }) {
 		const sound = new Sound({ manager: this, input, args });
 		this.instances.add(new WeakRef(sound));
 		return sound;
 	}
 
-	MuteAll() {
+	muteAll() {
 		if (isServer) return;
 		this.instances.forEach((ref) => {
 			const player = ref.deref();
@@ -64,7 +60,7 @@ export class SoundManager {
 		});
 	}
 
-	UnmuteAll() {
+	unmuteAll() {
 		if (isServer) return;
 		this.instances.forEach((ref) => {
 			const player = ref.deref();
@@ -74,7 +70,7 @@ export class SoundManager {
 		});
 	}
 
-	PauseAll() {
+	pauseAll() {
 		if (isServer) return;
 		this.instances.forEach((ref) => {
 			const player = ref.deref();
@@ -84,7 +80,7 @@ export class SoundManager {
 		});
 	}
 
-	StopAll() {
+	stopAll() {
 		if (isServer) return;
 		this.instances.forEach((ref) => {
 			const player = ref.deref();
@@ -94,14 +90,14 @@ export class SoundManager {
 		});
 	}
 
-	CreateAudioBuffer(
+	createAudioBuffer(
 		input: string | ArrayBuffer,
 	): Promise<AudioBuffer | undefined> {
 		if (isServer) {
 			return Promise.resolve(undefined);
 		}
 
-		assert(this.context, "AudioContext is not initialized");
+		ASSERT(this.context, "AudioContext is not initialized");
 
 		if (this.cache.has(input)) {
 			return this.cache.get(input)!;
@@ -113,10 +109,8 @@ export class SoundManager {
 				this.context!.decodeAudioData(ab),
 			);
 			this.cache.set(input, audioBuffer);
-		} else if (input instanceof ArrayBuffer) {
-			this.cache.set(input, this.context.decodeAudioData(input));
 		} else {
-			throw new Error("Invalid input for AudioPlayer.CreateAudioBuffer");
+			this.cache.set(input, this.context.decodeAudioData(input));
 		}
 
 		return this.cache.get(input)!;
@@ -190,7 +184,7 @@ export class Sound {
 
 	set loop(value: boolean) {
 		if (isServer) return;
-		assert(!!this.#source, "Cannot set loop before audio is loaded");
+		ASSERT(!!this.#source, "Cannot set loop before audio is loaded");
 		this.#loop = value;
 		this.#source.loop = value;
 	}
@@ -203,7 +197,7 @@ export class Sound {
 
 	set volume(value: number) {
 		if (isServer) return;
-		assert(!!this.#gainNode, "Cannot set volume before audio is loaded");
+		ASSERT(!!this.#gainNode, "Cannot set volume before audio is loaded");
 		this.#volume = clamp(value, 0, 1);
 		this.#gainNode.gain.value = this.#volume;
 	}
@@ -292,7 +286,7 @@ export class Sound {
 
 		if (isBrowser) {
 			args.manager
-				.CreateAudioBuffer(args.input)
+				.createAudioBuffer(args.input)
 				.then((audioBuffer) => {
 					if (!audioBuffer) {
 						throw new Error("Failed to create audio buffer");
@@ -351,8 +345,8 @@ export class Sound {
 			return;
 		}
 
-		assert(!!this.#manager.context, "AudioContext is not initialized");
-		assert(!!this.#gainNode, "Audio buffer is not initialized");
+		ASSERT(!!this.#manager.context, "AudioContext is not initialized");
+		ASSERT(!!this.#gainNode, "Audio buffer is not initialized");
 
 		const src = this.#manager.context.createBufferSource();
 		src.buffer = this.audioBuffer;
@@ -367,8 +361,8 @@ export class Sound {
 			return;
 		}
 
-		assert(!!this.#manager.context, "AudioContext is not initialized");
-		assert(!!this.#gainNode, "Audio buffer is not initialized");
+		ASSERT(!!this.#manager.context, "AudioContext is not initialized");
+		ASSERT(!!this.#gainNode, "Audio buffer is not initialized");
 
 		this.#debug("Playing audio", this.src || this.buffer);
 		this.#source = this.#manager.context.createBufferSource();
@@ -401,8 +395,8 @@ export class Sound {
 	pause() {
 		if (isServer) return;
 
-		assert(this.#manager.context, "AudioContext is not initialized");
-		assert(this.#source, "No source to pause");
+		ASSERT(this.#manager.context, "AudioContext is not initialized");
+		ASSERT(this.#source, "No source to pause");
 
 		this.#debug("Pausing audio", this.src || this.buffer);
 
@@ -426,7 +420,7 @@ export class Sound {
 	stop() {
 		if (isServer) return;
 
-		assert(this.#source, "No source to stop");
+		ASSERT(this.#source, "No source to stop");
 
 		this.#debug("Stopping audio", this.src || this.buffer);
 
@@ -446,7 +440,7 @@ export class Sound {
 	mute() {
 		if (isServer) return;
 
-		assert(!!this.#gainNode, "Cannot mute before audio is loaded");
+		ASSERT(!!this.#gainNode, "Cannot mute before audio is loaded");
 
 		this.#debug("Muting audio", this.src || this.buffer);
 
@@ -460,7 +454,7 @@ export class Sound {
 	unmute() {
 		if (isServer) return;
 
-		assert(!!this.#gainNode, "Cannot unmute before audio is loaded");
+		ASSERT(!!this.#gainNode, "Cannot unmute before audio is loaded");
 
 		this.#debug("Unmuting audio", this.src || this.buffer);
 
@@ -487,7 +481,7 @@ export class Sound {
 		this.#emit(SoundEvent.Seek);
 
 		if (this.playing) {
-			assert(!!this.#source, "No source to seek");
+			ASSERT(!!this.#source, "No source to seek");
 
 			this.#destroySource(this.#source);
 

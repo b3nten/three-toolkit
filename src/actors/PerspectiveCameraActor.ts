@@ -1,7 +1,7 @@
 import * as Three from "three";
-import { GameObject } from "../game_object";
+import { Actor } from "../actor";
 
-export class PerspectiveCameraObject extends GameObject<Three.PerspectiveCamera> {
+export class PerspectiveCameraActor extends Actor<Three.PerspectiveCamera> {
 	override object3d: Three.PerspectiveCamera;
 
 	#fov: number;
@@ -61,16 +61,14 @@ export class PerspectiveCameraObject extends GameObject<Three.PerspectiveCamera>
 		super.onCreate();
 		const renderTarget =
 			this.scene!.game!.renderPipeline.getRenderer().domElement;
-		const aspect = renderTarget.clientWidth / renderTarget.clientHeight;
-		this.object3d.aspect = aspect;
+		this.object3d.aspect = renderTarget.clientWidth / renderTarget.clientHeight;
 		this.object3d.updateProjectionMatrix();
 	}
 
 	override onResize(b: DOMRect) {
 		const renderTarget =
 			this.scene!.game!.renderPipeline.getRenderer().domElement;
-		const aspect = renderTarget.clientWidth / renderTarget.clientHeight;
-		this.object3d.aspect = aspect;
+		this.object3d.aspect = renderTarget.clientWidth / renderTarget.clientHeight;
 		this.object3d.updateProjectionMatrix();
 	}
 }

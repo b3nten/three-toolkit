@@ -1,5 +1,5 @@
 import type * as Three from "three";
-import { isObject3D, isRenderItem } from "./assert";
+import { isObject3D, isRenderItem } from "./asserts";
 
 /****************************************************************************************
  * Adopted from Lume, thank you <3
